@@ -1,0 +1,86 @@
+// CivicPulse - Lalitpur Municipality Prisma Schema
+// Compatible with standard Postgres VARCHAR columns
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String      @id @default(cuid())
+  name               String
+  email              String      @unique
+  passwordHash       String      @map("password_hash")
+  role               String      @default("user")
+  organizationName   String?     @map("organization_name")
+  registrationNumber String?     @map("registration_number")
+  createdAt          DateTime    @default(now()) @map("created_at")
+  
+  issues             Issue[]
+  votes              IssueVote[]
+  ngoKeys            NgoApiKey[]
+
+  @@map("users")
+}
+
+model Issue {
+  id              String      @id @default(cuid())
+  userId          String?     @map("user_id")
+  title           String
+  category        String
+  description     String      @db.Text
+  locationLat     Float       @map("location_lat")
+  locationLng     Float       @map("location_lng")
+  address         String
+  imageUrl        String?     @map("image_url")
+  status          String      @default("REPORTED")
+  netUpvotes      Int         @default(0) @map("net_upvotes")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  escalatedAt     DateTime?   @map("escalated_at")
+  resolvedAt      DateTime?   @map("resolved_at")
+  resolutionNotes String?     @db.Text @map("resolution_notes")
+  reporterName    String?     @map("reporter_name")
+  reporterContact String?     @map("reporter_contact")
+
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  votes           IssueVote[]
+
+  @@index([status])
+  @@index([netUpvotes])
+  @@index([createdAt])
+  @@map("issues")
+}
+
+model IssueVote {
+  id        String   @id @default(cuid())
+  issueId   String   @map("issue_id")
+  userId    String   @map("user_id")
+  voteType  String   @default("UP") @map("vote_type")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([issueId, userId])
+  @@map("issue_votes")
+}
+
+model NgoApiKey {
+  id                  String   @id @default(cuid())
+  userId              String   @map("user_id")
+  orgName             String   @map("org_name")
+  apiKey              String   @unique @map("api_key")
+  tier                String   @default("COMMUNITY")
+  rateLimit           Int      @default(5000) @map("rate_limit")
+  subscriptionCostNpr Float    @default(0.0) @map("subscription_cost_npr")
+  requestCount        Int      @default(0) @map("request_count")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ngo_api_keys")
+}
