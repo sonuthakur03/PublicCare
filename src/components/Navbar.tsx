@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { User } from '@/types';
-import { Shield, MapPin, Building2, Key, PlusCircle, Activity, UserCheck, ChevronDown, LogIn, UserPlus, Users, LogOut, Radio } from 'lucide-react';
+import { Shield, MapPin, Building2, Key, PlusCircle, Activity, UserCheck, ChevronDown, LogIn, UserPlus, Users, LogOut, Radio, Store, Megaphone, FileText } from 'lucide-react';
 import LocationAccessBadge from '@/components/LocationAccessBadge';
 
 interface NavbarProps {
@@ -82,36 +82,50 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
       ];
     }
 
+    if (activeUser.role === 'vendor') {
+      return [
+        ...baseItems,
+        { label: 'Vendor Dashboard', href: '/vendor', icon: Store },
+        { label: 'My Ads', href: '/vendor/ads', icon: Megaphone },
+        { label: 'Tenders', href: '/vendor/tenders', icon: FileText },
+      ];
+    }
+
+    if (activeUser.role === 'superadmin') {
+      return [
+        ...baseItems,
+        { label: 'Super Console', href: '/superadmin', icon: Shield },
+        { label: 'Dispatch Console', href: '/admin', icon: Building2 },
+      ];
+    }
+
     return baseItems;
   };
 
   const navItems = getNavItems();
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FFFFFF] border-b border-[#D6CFC0] px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-[#FAF8F4]/90 backdrop-blur-md border-b border-[#D6CFC0]/70 px-8 py-5 shadow-sm transition-all duration-300">
+      <div className="max-w-[85rem] mx-auto flex items-center justify-between gap-8">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-4 group">
-          <div className="relative w-12 h-12 rounded-[12px] bg-[var(--primary)] p-0.5 group-hover:scale-105 transition-transform duration-200" style={{boxShadow: 'var(--shadow-level-1)'}}>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-[#0F6E64] to-[#14837A] p-0.5 group-hover:scale-105 transition-all duration-300 shadow-sm shadow-[#0F6E64]/20">
             <div className="w-full h-full bg-[#FFFFFF] rounded-[10px] flex items-center justify-center">
-              <Activity className="w-6 h-6 text-[var(--primary)] group-hover:text-[var(--primary-container)] transition-colors" />
+              <Activity className="w-5 h-5 text-[#0F6E64] group-hover:rotate-12 transition-transform duration-300" />
             </div>
           </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="font-display font-bold text-[24px] tracking-tight text-[#211D17]">CivicPulse</span>
-              <span className="text-[11px] font-semibold tracking-wider px-2.5 py-0.5 rounded-[6px] bg-[#14837A] text-[#FFFFFF] border border-[#0F6E64] uppercase">
-                Lalitpur
-              </span>
-            </div>
-            <p className="text-[13px] text-[#59524A] hidden sm:block">Municipal Hygiene Intelligence</p>
+          <div className="flex items-center gap-2">
+            <span className="font-display font-bold text-[20px] tracking-tight text-[#211D17]">PublicCare</span>
+            <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-md bg-[#E1F0EA] text-[#0F6E64] border border-[#BFE3D5] uppercase">
+              Lalitpur
+            </span>
           </div>
         </Link>
 
-        {/* Navigation Links */}
+        {/* Navigation Links - Smaller */}
         {activeUser && navItems.length > 0 && (
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -119,14 +133,14 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-[6px] text-[14px] font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold transition-all duration-300 ${
                     isActive
-                      ? 'bg-[#0F6E64] text-[#FFFFFF]'
-                      : 'text-[#59524A] hover:text-[#211D17] hover:bg-[#F5F1E9]'
+                      ? 'bg-[#0F6E64] text-[#FFFFFF] shadow-sm shadow-[#0F6E64]/20'
+                      : 'text-[#59524A] hover:text-[#211D17] hover:bg-[#EFE9DC]/70'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#FFFFFF]' : 'text-[#59524A]'}`} />
-                  {item.label}
+                  <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-[#FFFFFF]' : 'text-[#7A7266]'}`} />
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -134,9 +148,9 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
         )}
 
         {/* User Session & Auth Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <LocationAccessBadge compact />
           </div>
 
@@ -145,26 +159,24 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-3 px-4 py-2 rounded-[6px] bg-[#FFFFFF] border border-[#7A7266] text-[14px] font-medium text-[#211D17] hover:border-[#0F6E64] transition-all cursor-pointer"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-[#E1F0EA] border-2 border-[#E5E0D5] text-[#0F6E64] hover:border-[#0F6E64] hover:shadow-sm transition-all duration-200 cursor-pointer"
                 >
-                  <UserCheck className="w-4 h-4 text-[#0F6E64]" />
-                  <span className="max-w-[120px] truncate hidden sm:inline">{activeUser.name}</span>
-                  <span className="px-2 py-0.5 rounded-[6px] text-[11px] font-semibold tracking-wider uppercase bg-[#14837A] text-[#FFFFFF]">
-                    {activeUser.role.replace('_', ' ')}
-                  </span>
-                  <ChevronDown className="w-4 h-4 text-[#59524A]" />
+                  <UserCheck className="w-5 h-5" />
                 </button>
 
                 {userMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-[#FFFFFF] rounded-[12px] border border-[#D6CFC0] p-3 z-50 space-y-2 animate-in fade-in duration-150" style={{boxShadow: 'var(--shadow-level-2)'}}>
-                    <div className="px-3 py-2 border-b border-[#D6CFC0] pb-3 mb-2">
+                  <div className="absolute right-0 mt-3 w-56 bg-[#FFFFFF] rounded-xl border border-[#E5E0D5] p-3 z-50 space-y-2 shadow-lg animate-in fade-in duration-200">
+                    <div className="px-3 py-2 border-b border-[#E5E0D5] pb-3 mb-2">
                       <p className="font-bold text-[14px] text-[#211D17] truncate">{activeUser.name}</p>
-                      <p className="text-[12px] text-[#59524A] truncate">{activeUser.email}</p>
+                      <p className="text-[11px] font-medium text-[#7A7266] truncate mt-0.5">{activeUser.email}</p>
+                      <span className="inline-block mt-2 px-2 py-0.5 rounded text-[10px] font-bold tracking-wide uppercase bg-[#0F6E64] text-[#FFFFFF]">
+                        {activeUser.role.replace('_', ' ')}
+                      </span>
                     </div>
 
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 w-full p-2.5 rounded-[6px] text-[14px] font-medium hover:bg-[#FBE3E0] text-[#B3261E] transition-colors"
+                      className="flex items-center gap-2 w-full p-2.5 rounded-lg text-[13px] font-bold hover:bg-[#FFF0EE] text-[#B3261E] transition-colors cursor-pointer"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>
@@ -172,29 +184,19 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
                   </div>
                 )}
               </div>
-              
-              <Link
-                href="/raise-issue"
-                className="flex items-center gap-2 px-6 py-2.5 rounded-[6px] bg-[#0F6E64] text-[#FFFFFF] text-[14px] font-semibold hover:bg-[#14837A] active:scale-[0.98] transition-all"
-                style={{boxShadow: 'var(--shadow-level-1)'}}
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Report Issue</span>
-              </Link>
             </div>
           ) : (
             <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-[6px] border border-[#0F6E64] text-[#0F6E64] text-[14px] font-semibold hover:bg-[#0F6E64] hover:text-[#FFFFFF] transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#0F6E64] text-[#0F6E64] text-[13px] font-bold hover:bg-[#0F6E64] hover:text-[#FFFFFF] transition-all duration-200"
               >
                 <LogIn className="w-4 h-4" />
                 <span>Sign In</span>
               </Link>
               <Link
                 href="/register"
-                className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-[6px] bg-[#0F6E64] hover:bg-[#14837A] text-[#FFFFFF] text-[14px] font-semibold transition-colors"
-                style={{boxShadow: 'var(--shadow-level-1)'}}
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0F6E64] hover:bg-[#14837A] text-[#FFFFFF] text-[13px] font-bold transition-all duration-200 shadow-sm shadow-[#0F6E64]/20"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Register</span>

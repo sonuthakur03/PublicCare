@@ -27,6 +27,21 @@ export const INITIAL_USERS: User[] = [
     organizationName: 'Himalayan Climate Alliance',
     registrationNumber: 'NGO-LPT-2026-042',
     createdAt: '2026-01-15T00:00:00.000Z'
+  },
+  {
+    id: 'usr-superadmin-1',
+    name: 'System Administrator',
+    email: 'superadmin@PublicCare.np',
+    role: 'superadmin',
+    createdAt: '2026-01-01T00:00:00.000Z'
+  },
+  {
+    id: 'usr-vendor-1',
+    name: 'Ram Shrestha',
+    email: 'vendor@cleanlalitpur.com',
+    role: 'vendor',
+    organizationName: 'Clean Lalitpur Pvt Ltd',
+    createdAt: '2026-02-01T00:00:00.000Z'
   }
 ];
 
@@ -43,7 +58,11 @@ class AuthSessionFacade {
     return await AuthService.registerNgo(data);
   }
 
-  public async createAdminUser(creatorRole: UserRole, data: { name: string; email: string; password: string }) {
+  public async registerVendor(data: { name: string; email: string; password: string; companyName: string; businessType: string; description: string; contactPhone?: string; website?: string; locationLat: number; locationLng: number; address: string; serviceRadius?: number }) {
+    return await AuthService.registerVendor(data);
+  }
+
+  public async createAdminUser(creatorRole: UserRole, data: { name: string; email: string; password: string; role?: UserRole }) {
     return await AuthService.createAdminUser(creatorRole, data);
   }
 

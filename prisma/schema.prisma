@@ -24,6 +24,7 @@ model User {
   votes              IssueVote[]
   ngoKeys            NgoApiKey[]
   chatMessages       ChatMessage[]
+  vendor             Vendor?
 
   @@map("users")
 }
@@ -49,6 +50,7 @@ model Issue {
 
   user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   votes           IssueVote[]
+  tenders         Tender[]
 
   @@index([status])
   @@index([netUpvotes])
@@ -103,4 +105,77 @@ model ChatMessage {
   @@index([roomKey])
   @@index([createdAt])
   @@map("chat_messages")
+}
+
+// ─── Vendor System ────────────────────────────────────────
+
+model Vendor {
+  id            String   @id @default(cuid())
+  userId        String   @unique @map("user_id")
+  companyName   String   @map("company_name")
+  businessType  String   @map("business_type")
+  description   String   @db.Text
+  contactPhone  String?  @map("contact_phone")
+  website       String?
+  logoUrl       String?  @map("logo_url")
+  locationLat   Float    @map("location_lat")
+  locationLng   Float    @map("location_lng")
+  address       String
+  serviceRadius Float    @default(5.0) @map("service_radius")
+  isApproved    Boolean  @default(false) @map("is_approved")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ads           Ad[]
+  tenders       Tender[]
+
+  @@index([businessType])
+  @@index([isApproved])
+  @@map("vendors")
+}
+
+model Ad {
+  id          String   @id @default(cuid())
+  vendorId    String   @map("vendor_id")
+  title       String
+  description String   @db.Text
+  imageUrl    String?  @map("image_url")
+  linkUrl     String?  @map("link_url")
+  placement   String   @default("FEED")
+  isActive    Boolean  @default(true) @map("is_active")
+  isApproved  Boolean  @default(false) @map("is_approved")
+  impressions Int      @default(0)
+  clicks      Int      @default(0)
+  startDate   DateTime @default(now()) @map("start_date")
+  endDate     DateTime? @map("end_date")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@index([placement])
+  @@index([isActive])
+  @@index([isApproved])
+  @@map("ads")
+}
+
+model Tender {
+  id               String    @id @default(cuid())
+  vendorId         String    @map("vendor_id")
+  issueId          String    @map("issue_id")
+  proposalText     String    @db.Text @map("proposal_text")
+  estimatedCostNpr Float     @map("estimated_cost_npr")
+  estimatedDays    Int       @map("estimated_days")
+  status           String    @default("SUBMITTED")
+  submittedAt      DateTime  @default(now()) @map("submitted_at")
+  respondedAt      DateTime? @map("responded_at")
+  responseNotes    String?   @db.Text @map("response_notes")
+
+  vendor           Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  issue            Issue     @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([issueId])
+  @@index([vendorId])
+  @@map("tenders")
 }

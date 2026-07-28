@@ -59,7 +59,7 @@ export default function LoginPage() {
             <Lock className="w-6 h-6 text-[#0F6E64]" />
           </div>
           <h1 className="text-[22px] font-semibold text-[#211D17] font-[var(--font-display)]">Welcome back</h1>
-          <p className="text-[#59524A] text-[15px]">Sign in to your CivicPulse account</p>
+          <p className="text-[#59524A] text-[15px]">Sign in to your PublicCare account</p>
         </div>
 
         {error && (

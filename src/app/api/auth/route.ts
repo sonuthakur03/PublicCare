@@ -99,6 +99,19 @@ export async function POST(request: NextRequest) {
       return response;
     }
 
+    // REGISTER VENDOR
+    if (action === 'REGISTER_VENDOR') {
+      const { name, email, password, companyName, businessType, description, contactPhone, website, locationLat, locationLng, address, serviceRadius } = body;
+      if (!name || !email || !password || !companyName || !businessType || !description) {
+        return NextResponse.json({ error: 'Required fields missing.' }, { status: 400 });
+      }
+      const result = await authSession.registerVendor({ name, email, password, companyName, businessType, description, contactPhone, website, locationLat: locationLat || 27.6727, locationLng: locationLng || 85.3253, address: address || 'Lalitpur', serviceRadius });
+      const response = NextResponse.json({ success: true, message: 'Vendor account created! Awaiting approval.', user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken }, { status: 201 });
+      response.cookies.set('cp_access_token', result.accessToken, { httpOnly: true, path: '/' });
+      response.cookies.set('cp_refresh_token', result.refreshToken, { httpOnly: true, path: '/' });
+      return response;
+    }
+
     // 4. REGISTER NGO
     if (action === 'REGISTER_NGO') {
       const { name, email, password, organizationName, registrationNumber } = body;

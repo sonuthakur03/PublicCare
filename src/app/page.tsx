@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import CivicMap from '@/components/CivicMap';
 import IssueCard from '@/components/IssueCard';
+import AdCard from '@/components/AdCard';
 import LocationAccessBadge from '@/components/LocationAccessBadge';
 import NearbyChatWidget from '@/components/NearbyChatWidget';
 import { Issue, IssueCategory, IssueStatus, StatsSummary, User } from '@/types';
@@ -14,6 +15,7 @@ export default function Home() {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [stats, setStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [ads, setAds] = useState<any[]>([]);
   const [authLoading, setAuthLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
@@ -59,6 +61,16 @@ export default function Home() {
       if (data.success) {
         setIssues(data.data);
         setStats(data.stats);
+      }
+
+      try {
+        const adsRes = await fetch('/api/v1/ads?placement=FEED&active=true');
+        const adsData = await adsRes.json();
+        if (adsData.success) {
+          setAds(adsData.data);
+        }
+      } catch (e) {
+        console.error('Failed to load ads', e);
       }
     } catch (err) {
       console.error('Failed to load Lalitpur issues', err);
@@ -126,7 +138,7 @@ export default function Home() {
               Clean Streets. Safe Water. Your Voice Matters.
             </h1>
             <p style={{ fontSize: '1.125rem', color: '#59524A', maxWidth: '48rem', margin: '0 auto 2.5rem', lineHeight: 1.6 }}>
-              CivicPulse empowers citizens of Lalitpur Municipality to report waste hazards, track sanitation progress, and hold public services accountable.
+              PublicCare empowers citizens of Lalitpur Municipality to report health and sanitation hazards, track cleanup progress, and hold public services accountable.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link href="/register" style={{ padding: '0.75rem 2rem', backgroundColor: '#0F6E64', color: '#FFFFFF', borderRadius: '6px', fontWeight: 600, fontSize: '1.125rem', textDecoration: 'none' }}>
@@ -176,7 +188,7 @@ export default function Home() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
               {[
                 { step: '01', title: 'See an Issue', desc: 'Spot a garbage dump, sewage overflow, or sanitation hazard.' },
-                { step: '02', title: 'Report It', desc: 'Snap a photo, add details, and drop a pin on the CivicPulse map.' },
+                { step: '02', title: 'Report It', desc: 'Snap a photo, add details, and drop a pin on the Health & Sanitation map.' },
                 { step: '03', title: 'Community Vote', desc: 'Neighbors upvote critical issues to raise their priority.' },
                 { step: '04', title: 'Action Taken', desc: 'Lalitpur officers dispatch crews and mark the issue resolved.' },
               ].map((item, i) => (
@@ -192,7 +204,7 @@ export default function Home() {
         </main>
 
         <footer style={{ borderTop: '1px solid #D6CFC0', padding: '2rem', textAlign: 'center', color: '#59524A' }}>
-          <p>Built for Lalitpur Metropolitan City © 2026 CivicPulse.</p>
+          <p>Built for Lalitpur Metropolitan City © 2026 PublicCare.</p>
         </footer>
       </div>
     );
@@ -205,7 +217,7 @@ export default function Home() {
       <Navbar criticalCount={stats?.criticalIssues || 0} />
 
       {/* Main Container */}
-      <main style={{ flex: 1, maxWidth: '80rem', width: '100%', margin: '0 auto', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+      <main style={{ flex: 1, maxWidth: '80rem', width: '100%', margin: '0 auto', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', gap: '4rem' }}>
         
         {/* Citizen Location Access Prompt */}
         <LocationAccessBadge
@@ -337,55 +349,79 @@ export default function Home() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem', minHeight: '800px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
             
-            {/* Map Area */}
-            <div style={{ borderRadius: '12px', border: '1px solid #D6CFC0', overflow: 'hidden', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
-              <CivicMap
-                issues={issues}
-                onUpvote={handleUpvote}
-                selectedIssueId={selectedIssueId}
-                onSelectIssue={(id) => setSelectedIssueId(id)}
-              />
+            {/* Top Section: Map Area */}
+            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', padding: '1.5rem', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <MapPin style={{ width: '1.5rem', height: '1.5rem', color: '#0F6E64' }} />
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#211D17', fontFamily: 'var(--font-display)' }}>Live Health & Sanitation Map</h2>
+                </div>
+                <span style={{ fontSize: '0.875rem', color: '#59524A', fontWeight: 500 }}>
+                  Click a marker to inspect details or upvote issues in Lalitpur
+                </span>
+              </div>
+              <div style={{ borderRadius: '8px', overflow: 'hidden', height: '520px', border: '1px solid #E5E0D5' }}>
+                <CivicMap
+                  issues={issues}
+                  onUpvote={handleUpvote}
+                  selectedIssueId={selectedIssueId}
+                  onSelectIssue={(id) => setSelectedIssueId(id)}
+                />
+              </div>
             </div>
 
-            {/* Feed Area */}
-            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', padding: '1.5rem', overflow: 'hidden', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
+            {/* Bottom Section: Community Feed Area */}
+            <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', padding: '2rem', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
               
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid #D6CFC0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '1.25rem', marginBottom: '2rem', borderBottom: '1px solid #D6CFC0', flexWrap: 'wrap', gap: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#211D17', fontFamily: 'var(--font-display)' }}>Community Feed</h2>
+                  <Layers style={{ width: '1.5rem', height: '1.5rem', color: '#0F6E64' }} />
+                  <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#211D17', fontFamily: 'var(--font-display)' }}>Community Feed & Local Solutions</h2>
                   <span style={{ fontSize: '0.875rem', fontWeight: 600, padding: '0.25rem 0.75rem', borderRadius: '9999px', backgroundColor: '#EFE9DC', color: '#0F6E64' }}>
-                    {issues.length} Issues
+                    {issues.length} Active Issues
                   </span>
                 </div>
                 <button
                   onClick={fetchIssues}
-                  style={{ padding: '0.5rem', color: '#59524A', borderRadius: '6px', backgroundColor: '#F5F1E9', border: 'none', cursor: 'pointer', transition: 'background-color 0.2s' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.625rem 1rem', color: '#0F6E64', borderRadius: '8px', backgroundColor: '#E1F0EA', border: '1px solid #BFE3D5', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}
                   title="Refresh Feed"
-                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#EFE9DC'}
-                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#F5F1E9'}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#BFE3D5'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#E1F0EA'}
                 >
-                  <RefreshCw style={{ width: '1.25rem', height: '1.25rem' }} className={loading ? 'animate-spin' : ''} />
+                  <RefreshCw style={{ width: '1.125rem', height: '1.125rem' }} className={loading ? 'animate-spin' : ''} />
+                  <span>Refresh</span>
                 </button>
               </div>
 
-              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingRight: '0.5rem' }}>
+              <div>
                 {loading ? (
-                  <div style={{ padding: '5rem 0', textAlign: 'center', color: '#7A7266', fontSize: '1rem' }}>Loading Lalitpur issues...</div>
+                  <div style={{ padding: '6rem 0', textAlign: 'center', color: '#7A7266', fontSize: '1.125rem' }}>Loading Lalitpur community feed...</div>
                 ) : issues.length === 0 ? (
-                  <div style={{ padding: '5rem 0', textAlign: 'center', color: '#7A7266', fontSize: '1rem' }}>No issues match the selected filters.</div>
+                  <div style={{ padding: '6rem 0', textAlign: 'center', color: '#7A7266', fontSize: '1.125rem' }}>No issues match the selected filters.</div>
                 ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                    {issues.map((issue) => (
-                      <IssueCard
-                        key={issue.id}
-                        issue={issue}
-                        onUpvote={handleUpvote}
-                        isSelected={selectedIssueId === issue.id}
-                        onSelect={() => setSelectedIssueId(issue.id)}
-                      />
-                    ))}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2.5rem' }}>
+                    {issues.reduce((acc: any[], issue, index) => {
+                      acc.push(
+                        <IssueCard
+                          key={issue.id}
+                          issue={issue}
+                          onUpvote={handleUpvote}
+                          isSelected={selectedIssueId === issue.id}
+                          onSelect={() => setSelectedIssueId(issue.id)}
+                        />
+                      );
+                      // Every 2nd item (after every 2 issues), insert an ad if available to increase visibility and spacing
+                      if ((index + 1) % 2 === 0 && ads.length > 0) {
+                        const adIndex = Math.floor(index / 2) % ads.length;
+                        const ad = ads[adIndex];
+                        if (ad) {
+                          acc.push(<AdCard key={`ad-${ad.id}-${index}`} ad={ad} />);
+                        }
+                      }
+                      return acc;
+                    }, [])}
                   </div>
                 )}
               </div>

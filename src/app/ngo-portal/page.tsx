@@ -123,7 +123,7 @@ export default function NgoPortal() {
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement('a');
       link.setAttribute('href', encodedUri);
-      link.setAttribute('download', `lalitpur_civicpulse_contamination_export_${Date.now()}.csv`);
+      link.setAttribute('download', `lalitpur_PublicCare_contamination_export_${Date.now()}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -176,7 +176,7 @@ export default function NgoPortal() {
     );
   }
 
-  const curlCommand = `curl -X GET "https://civicpulse.lalitpur.gov.np/api/v1/issues?status=CRITICAL" \\
+  const curlCommand = `curl -X GET "https://PublicCare.lalitpur.gov.np/api/v1/issues?status=CRITICAL" \\
   -H "x-api-key: ${sandboxApiKey || 'cp_lpt_your_key_here'}"`;
 
   return (

@@ -1,8 +1,8 @@
 import { User } from '@/types';
 
 // Simple, robust Web Crypto / HMAC JWT Helper adhering to DRY principles
-const JWT_SECRET = 'civicpulse_lalitpur_secure_jwt_secret_key_2026';
-const REFRESH_SECRET = 'civicpulse_lalitpur_secure_refresh_secret_key_2026';
+const JWT_SECRET = 'PublicCare_lalitpur_secure_jwt_secret_key_2026';
+const REFRESH_SECRET = 'PublicCare_lalitpur_secure_refresh_secret_key_2026';
 
 export interface JwtPayload {
   userId: string;

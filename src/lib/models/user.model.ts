@@ -77,9 +77,26 @@ export const UserModel = {
     }
   },
 
-  async createAdminUser(creatorRole: UserRole, data: { name: string; email: string; passwordHash: string }): Promise<User> {
-    if (creatorRole !== 'municipality_admin') {
-      throw new Error('FORBIDDEN: Only an existing Municipality Admin can create admin users.');
+  async createVendorUser(data: { name: string; email: string; passwordHash: string; organizationName: string }): Promise<User> {
+    try {
+      const created = await prisma.user.create({
+        data: {
+          name: data.name,
+          email: data.email.toLowerCase(),
+          passwordHash: data.passwordHash,
+          role: 'vendor',
+          organizationName: data.organizationName
+        }
+      });
+      return this.toType(created);
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  async createAdminUser(creatorRole: UserRole, data: { name: string; email: string; passwordHash: string; role?: UserRole }): Promise<User> {
+    if (creatorRole !== 'municipality_admin' && creatorRole !== 'superadmin') {
+      throw new Error('FORBIDDEN: Only an existing Municipality Admin or Superadmin can create admin users.');
     }
 
     const created = await prisma.user.create({
@@ -87,7 +104,7 @@ export const UserModel = {
         name: data.name,
         email: data.email.toLowerCase(),
         passwordHash: data.passwordHash,
-        role: 'municipality_admin'
+        role: data.role || 'municipality_admin'
       }
     });
     return this.toType(created);
@@ -101,6 +118,25 @@ export const UserModel = {
       return list.map(u => this.toType(u));
     } catch (err) {
       return [];
+    }
+  },
+
+  async updateRole(userId: string, newRole: UserRole): Promise<User> {
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: { role: newRole }
+    });
+    return this.toType(updated);
+  },
+
+  async delete(userId: string): Promise<boolean> {
+    try {
+      await prisma.user.delete({
+        where: { id: userId }
+      });
+      return true;
+    } catch (err) {
+      return false;
     }
   }
 };

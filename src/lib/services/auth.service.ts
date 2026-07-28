@@ -58,7 +58,40 @@ export const AuthService = {
     };
   },
 
-  async createAdminUser(creatorRole: UserRole, data: { name: string; email: string; password: string }): Promise<User> {
+  async registerVendor(data: { name: string; email: string; password: string; companyName: string; businessType: string; description: string; contactPhone?: string; website?: string; locationLat: number; locationLng: number; address: string; serviceRadius?: number }): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+    const existing = await UserModel.findByEmail(data.email);
+    if (existing) {
+      throw new Error('An account with this email address already exists.');
+    }
+
+    const user = await UserModel.createVendorUser({
+      name: data.name,
+      email: data.email,
+      passwordHash: data.password,
+      organizationName: data.companyName
+    });
+
+    const { VendorModel } = await import('../models/vendor.model');
+    await VendorModel.create(user.id, {
+      companyName: data.companyName,
+      businessType: data.businessType,
+      description: data.description,
+      contactPhone: data.contactPhone,
+      website: data.website,
+      locationLat: data.locationLat,
+      locationLng: data.locationLng,
+      address: data.address,
+      serviceRadius: data.serviceRadius || 5.0
+    });
+
+    return {
+      user,
+      accessToken: generateAccessToken(user),
+      refreshToken: generateRefreshToken(user)
+    };
+  },
+
+  async createAdminUser(creatorRole: UserRole, data: { name: string; email: string; password: string; role?: UserRole }): Promise<User> {
     const existing = await UserModel.findByEmail(data.email);
     if (existing) {
       throw new Error('An account with this email address already exists.');
@@ -67,7 +100,8 @@ export const AuthService = {
     return await UserModel.createAdminUser(creatorRole, {
       name: data.name,
       email: data.email,
-      passwordHash: data.password
+      passwordHash: data.password,
+      role: data.role
     });
   }
 };
