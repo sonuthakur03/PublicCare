@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, MapPin, Camera, AlertCircle, Check, Loader2 } from 'lucide-react';
+import { X, MapPin, Camera, AlertCircle, Check, Loader2, UploadCloud } from 'lucide-react';
 import { IssueCategory } from '@/types';
 
 interface ReportIssueModalProps {
@@ -15,9 +15,11 @@ export default function ReportIssueModal({ isOpen, onClose, onIssueCreated }: Re
   const [category, setCategory] = useState<IssueCategory>('GARBAGE_DUMP');
   const [description, setDescription] = useState('');
   const [address, setAddress] = useState('');
-  const [locationLat, setLocationLat] = useState('40.7128');
-  const [locationLng, setLocationLng] = useState('-74.0060');
+  const [locationLat, setLocationLat] = useState('27.6727');
+  const [locationLng, setLocationLng] = useState('85.3253');
   const [imageUrl, setImageUrl] = useState('');
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [reporterName, setReporterName] = useState('');
   const [reporterContact, setReporterContact] = useState('');
 
@@ -25,6 +27,33 @@ export default function ReportIssueModal({ isOpen, onClose, onIssueCreated }: Re
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
+
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    setPreviewUrl(URL.createObjectURL(selectedFile));
+    setUploadingImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      const res = await fetch('/api/v1/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.success && (data.imageUrl || data.cloudinaryUrl)) {
+        setImageUrl(data.imageUrl || data.cloudinaryUrl);
+      }
+    } catch (err) {
+      console.error('Image upload failed', err);
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,8 +74,8 @@ export default function ReportIssueModal({ isOpen, onClose, onIssueCreated }: Re
           category,
           description,
           address,
-          locationLat: parseFloat(locationLat) || 40.7128,
-          locationLng: parseFloat(locationLng) || -74.0060,
+          locationLat: parseFloat(locationLat) || 27.6727,
+          locationLng: parseFloat(locationLng) || 85.3253,
           imageUrl: imageUrl || 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80',
           reporterName,
           reporterContact
@@ -181,16 +210,32 @@ export default function ReportIssueModal({ isOpen, onClose, onIssueCreated }: Re
             </div>
           </div>
 
-          {/* Image URL optional */}
+          {/* Photo Evidence Cloudinary Upload */}
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Photo Evidence URL (Optional)</label>
-            <input
-              type="url"
-              placeholder="https://..."
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-all"
-            />
+            <label className="block text-xs font-semibold text-slate-300 mb-1">Photo Evidence (Cloudinary CDN Upload)</label>
+            <div className="relative border-2 dashed border-slate-700 hover:border-emerald-500 rounded-xl p-4 text-center bg-slate-900/60 transition-all cursor-pointer">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageFileChange}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+              {previewUrl || imageUrl ? (
+                <div className="flex flex-col items-center gap-2">
+                  <img src={previewUrl || imageUrl} alt="Preview" className="w-24 h-24 object-cover rounded-lg border border-emerald-500 shadow-md" />
+                  <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                    {uploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                    {uploadingImage ? 'Uploading to Cloudinary...' : 'Uploaded to Cloudinary'}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1.5 py-2">
+                  <UploadCloud className="w-7 h-7 text-emerald-400" />
+                  <p className="text-xs font-semibold text-slate-200">Click or Drag photo here to upload</p>
+                  <p className="text-[11px] text-slate-400">JPG, PNG, WEBP saved to Cloudinary</p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Reporter info optional */}

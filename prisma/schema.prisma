@@ -11,18 +11,19 @@ datasource db {
 }
 
 model User {
-  id                 String      @id @default(cuid())
+  id                 String        @id @default(cuid())
   name               String
-  email              String      @unique
-  passwordHash       String      @map("password_hash")
-  role               String      @default("user")
-  organizationName   String?     @map("organization_name")
-  registrationNumber String?     @map("registration_number")
-  createdAt          DateTime    @default(now()) @map("created_at")
+  email              String        @unique
+  passwordHash       String        @map("password_hash")
+  role               String        @default("user")
+  organizationName   String?       @map("organization_name")
+  registrationNumber String?       @map("registration_number")
+  createdAt          DateTime      @default(now()) @map("created_at")
   
   issues             Issue[]
   votes              IssueVote[]
   ngoKeys            NgoApiKey[]
+  chatMessages       ChatMessage[]
 
   @@map("users")
 }
@@ -83,4 +84,23 @@ model NgoApiKey {
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("ngo_api_keys")
+}
+
+model ChatMessage {
+  id          String   @id @default(cuid())
+  userId      String?  @map("user_id")
+  senderName  String   @map("sender_name")
+  isAnonymous Boolean  @default(true) @map("is_anonymous")
+  text        String   @db.Text
+  roomKey     String   @map("room_key")
+  ipSubnet    String   @map("ip_subnet")
+  locationLat Float?   @map("location_lat")
+  locationLng Float?   @map("location_lng")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([roomKey])
+  @@index([createdAt])
+  @@map("chat_messages")
 }
