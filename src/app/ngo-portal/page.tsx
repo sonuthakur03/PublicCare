@@ -16,7 +16,6 @@ export default function NgoPortal() {
   const [keyGenerating, setKeyGenerating] = useState(false);
   const [generatedKey, setGeneratedKey] = useState<NgoApiKey | null>(null);
 
-  // API Sandbox State
   const [sandboxApiKey, setSandboxApiKey] = useState('');
   const [sandboxCategory, setSandboxCategory] = useState('');
   const [sandboxStatus, setSandboxStatus] = useState('');
@@ -135,10 +134,10 @@ export default function NgoPortal() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-xs text-slate-500 animate-pulse">Verifying NGO Research Credentials...</p>
+          <p style={{ fontSize: '12px', color: '#59524A' }} className="animate-pulse">Verifying NGO Research Credentials...</p>
         </main>
       </div>
     );
@@ -146,29 +145,29 @@ export default function NgoPortal() {
 
   if (!currentUser || (currentUser.role !== 'ngo' && currentUser.role !== 'municipality_admin')) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
         <Navbar />
         <main className="flex-1 max-w-md w-full mx-auto px-4 py-20 text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mx-auto">
-            <Lock className="w-8 h-8 text-purple-400" />
+          <div style={{ width: '64px', height: '64px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
+            <Lock style={{ width: '32px', height: '32px', color: '#0F6E64' }} />
           </div>
-          <h1 className="text-xl font-bold text-white">NGO Developer & Research Portal</h1>
-          <p className="text-xs text-slate-400">
+          <h1 style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'var(--font-display)', color: '#211D17' }}>NGO Developer & Research Portal</h1>
+          <p style={{ fontSize: '12px', color: '#59524A' }}>
             Access to real-time contamination telemetry and API keys is restricted to <strong>Registered NGO Partners (`ngo`)</strong>.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '12px', paddingTop: '8px', flexWrap: 'wrap' }}>
             <button
               onClick={() => router.push('/login')}
-              className="flex-1 py-2.5 rounded-xl bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-200 font-bold text-xs transition-all flex items-center justify-center gap-1.5"
+              style={{ flex: 1, padding: '10px', borderRadius: '6px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', color: '#211D17', fontWeight: 'bold', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer' }}
             >
-              <LogIn className="w-4 h-4 text-sky-400" />
+              <LogIn style={{ width: '16px', height: '16px', color: '#0F6E64' }} />
               <span>Sign In</span>
             </button>
             <button
               onClick={() => router.push('/register/ngo')}
-              className="flex-1 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-1.5"
+              style={{ flex: 1, padding: '10px', borderRadius: '6px', backgroundColor: '#0F6E64', border: 'none', color: '#FFFFFF', fontWeight: 'bold', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', cursor: 'pointer' }}
             >
-              <UserPlus className="w-4 h-4" />
+              <UserPlus style={{ width: '16px', height: '16px' }} />
               <span>Register NGO Account</span>
             </button>
           </div>
@@ -181,84 +180,76 @@ export default function NgoPortal() {
   -H "x-api-key: ${sandboxApiKey || 'cp_lpt_your_key_here'}"`;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
         
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 glass-panel p-6 rounded-2xl border border-slate-800">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg shadow-purple-950/50">
-              <Key className="w-6 h-6 text-white" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }} className="sm:flex-row sm:items-center sm:justify-between">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#0F6E64', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Key style={{ width: '24px', height: '24px', color: '#FFFFFF' }} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">NGO & INGO Open Data Portal</h1>
-              <p className="text-xs text-slate-400">Anonymized Municipal Telemetry API for Environmental Research in Lalitpur Municipality</p>
+              <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#211D17', fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>NGO & INGO Open Data Portal</h1>
+              <p style={{ fontSize: '12px', color: '#59524A' }}>Anonymized Municipal Telemetry API for Environmental Research in Lalitpur Municipality</p>
             </div>
           </div>
 
           <button
             onClick={exportCsv}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition-all shadow-md cursor-pointer"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', color: '#211D17', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}
           >
-            <Download className="w-4 h-4 text-sky-400" />
+            <Download style={{ width: '16px', height: '16px', color: '#0F6E64' }} />
             <span>Export Lalitpur CSV Dataset</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
           
           <div className="lg:col-span-5 space-y-6">
             
-            <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-indigo-400" />
+            <div style={{ padding: '24px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }} className="space-y-4">
+              <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#211D17', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-display)' }}>
+                <Sparkles style={{ width: '20px', height: '20px', color: '#0F6E64' }} />
                 Generate Scoped NGO Access Key
               </h2>
-              <p className="text-xs text-slate-400">
+              <p style={{ fontSize: '12px', color: '#59524A', marginBottom: '16px' }}>
                 Provision API keys linked to <strong>{currentUser.organizationName || currentUser.name}</strong> to query real-time Lalitpur contamination data.
               </p>
 
-              <form onSubmit={handleGenerateKey} className="space-y-4 pt-2">
+              <form onSubmit={handleGenerateKey} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Organization Name</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#211D17', marginBottom: '4px' }}>Organization Name</label>
                   <input
                     type="text"
                     disabled
                     value={currentUser.organizationName || currentUser.name}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-400 font-semibold"
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '12px', backgroundColor: '#F5F1E9', border: '1px solid #D6CFC0', fontSize: '12px', color: '#59524A', fontWeight: 600 }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Subscription Tier (Nepali Currency)</label>
+                  <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#211D17', marginBottom: '4px' }}>Subscription Tier (Nepali Currency)</label>
                   <div className="grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => setTier('COMMUNITY')}
-                      className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all cursor-pointer ${
-                        tier === 'COMMUNITY'
-                          ? 'bg-indigo-500/20 border-indigo-500 text-indigo-300 shadow-md'
-                          : 'bg-slate-900 border-slate-800 text-slate-400'
-                      }`}
+                      style={{ padding: '12px', borderRadius: '12px', border: tier === 'COMMUNITY' ? '1px solid #0F6E64' : '1px solid #D6CFC0', backgroundColor: tier === 'COMMUNITY' ? '#E1F0EA' : '#FFFFFF', textAlign: 'left', cursor: 'pointer' }}
                     >
-                      <div className="font-bold text-sm">Community Tier</div>
-                      <div className="text-xs text-emerald-400 font-bold mt-1">Rs. 0 (Free)</div>
-                      <div className="text-[10px] text-slate-400 font-normal mt-0.5">5,000 req/month</div>
+                      <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#211D17' }}>Community Tier</div>
+                      <div style={{ fontSize: '12px', color: '#157F4A', fontWeight: 'bold', marginTop: '4px' }}>Rs. 0 (Free)</div>
+                      <div style={{ fontSize: '10px', color: '#59524A', marginTop: '2px' }}>5,000 req/month</div>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setTier('ENTERPRISE')}
-                      className={`p-3 rounded-xl border text-xs font-semibold text-left transition-all cursor-pointer ${
-                        tier === 'ENTERPRISE'
-                          ? 'bg-purple-500/20 border-purple-500 text-purple-300 shadow-md'
-                          : 'bg-slate-900 border-slate-800 text-slate-400'
-                      }`}
+                      style={{ padding: '12px', borderRadius: '12px', border: tier === 'ENTERPRISE' ? '1px solid #C1592B' : '1px solid #D6CFC0', backgroundColor: tier === 'ENTERPRISE' ? '#FBEAE1' : '#FFFFFF', textAlign: 'left', cursor: 'pointer' }}
                     >
-                      <div className="font-bold text-sm">Enterprise Tier</div>
-                      <div className="text-xs text-purple-300 font-bold mt-1">Rs. 5,000 / month</div>
-                      <div className="text-[10px] text-slate-400 font-normal mt-0.5">50,000 req/month</div>
+                      <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#211D17' }}>Enterprise Tier</div>
+                      <div style={{ fontSize: '12px', color: '#C1592B', fontWeight: 'bold', marginTop: '4px' }}>Rs. 5,000 / month</div>
+                      <div style={{ fontSize: '10px', color: '#59524A', marginTop: '2px' }}>50,000 req/month</div>
                     </button>
                   </div>
                 </div>
@@ -266,40 +257,40 @@ export default function NgoPortal() {
                 <button
                   type="submit"
                   disabled={keyGenerating}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold text-xs transition-all shadow-md shadow-purple-950/40 cursor-pointer"
+                  style={{ width: '100%', padding: '10px', borderRadius: '6px', backgroundColor: '#0F6E64', color: '#FFFFFF', fontWeight: 'bold', fontSize: '12px', border: 'none', cursor: 'pointer', marginTop: '8px' }}
                 >
                   {keyGenerating ? 'Provisioning Key...' : 'Provision NGO API Key'}
                 </button>
               </form>
 
               {generatedKey && (
-                <div className="mt-4 p-4 rounded-xl bg-indigo-950/80 border border-indigo-500/50 text-indigo-200 text-xs space-y-2">
-                  <div className="font-bold flex items-center justify-between">
+                <div style={{ marginTop: '16px', padding: '16px', borderRadius: '12px', backgroundColor: '#E1F0EA', border: '1px solid #157F4A', color: '#0B5850', fontSize: '12px' }} className="space-y-2">
+                  <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span>Key Generated!</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 uppercase font-bold">
+                    <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '4px', backgroundColor: '#FFFFFF', border: '1px solid #157F4A', color: '#157F4A', textTransform: 'uppercase', fontWeight: 'bold' }}>
                       {generatedKey.tier} (Rs. {generatedKey.subscriptionCostNpr})
                     </span>
                   </div>
-                  <div className="p-2 rounded bg-slate-950 font-mono text-[11px] text-emerald-400 break-all select-all">
+                  <div style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#FFFFFF', fontFamily: 'monospace', fontSize: '11px', color: '#211D17', wordBreak: 'break-all', userSelect: 'all', border: '1px solid #D6CFC0' }}>
                     {generatedKey.apiKey}
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-3">
-              <h3 className="text-sm font-bold text-white">Your Owned API Keys ({keys.length})</h3>
+            <div style={{ padding: '24px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }} className="space-y-3">
+              <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#211D17', fontFamily: 'var(--font-display)' }}>Your Owned API Keys ({keys.length})</h3>
               <div className="space-y-2 max-h-[280px] overflow-y-auto pr-1">
                 {keys.map((k) => (
-                  <div key={k.id} className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-200">{k.orgName}</span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-indigo-300">
+                  <div key={k.id} style={{ padding: '12px', borderRadius: '12px', backgroundColor: '#FAF8F4', border: '1px solid #D6CFC0', fontSize: '12px' }} className="space-y-1">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontWeight: 'bold', color: '#211D17' }}>{k.orgName}</span>
+                      <span style={{ fontSize: '10px', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', backgroundColor: '#EFE9DC', color: '#59524A' }}>
                         {k.tier} • Rs. {k.subscriptionCostNpr}
                       </span>
                     </div>
-                    <div className="font-mono text-[11px] text-slate-400 truncate">{k.apiKey}</div>
-                    <div className="text-[10px] text-slate-500 flex items-center justify-between pt-1">
+                    <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#59524A' }} className="truncate">{k.apiKey}</div>
+                    <div style={{ fontSize: '10px', color: '#7A7266', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '4px' }}>
                       <span>Rate Limit: {k.rateLimit.toLocaleString()} req/mo</span>
                       <span>Requests: {k.requestCount}</span>
                     </div>
@@ -312,34 +303,34 @@ export default function NgoPortal() {
 
           <div className="lg:col-span-7 space-y-6">
             
-            <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold text-white flex items-center gap-2">
-                  <Terminal className="w-5 h-5 text-emerald-400" />
+            <div style={{ padding: '24px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }} className="space-y-4">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: 'bold', color: '#211D17', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-display)' }}>
+                  <Terminal style={{ width: '20px', height: '20px', color: '#0F6E64' }} />
                   Interactive API Sandbox
                 </h2>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/30">
+                <span style={{ fontSize: '12px', fontWeight: 600, padding: '6px 10px', borderRadius: '8px', backgroundColor: '#E1F0EA', color: '#0B5850', border: '1px solid #157F4A' }}>
                   GET /api/v1/issues
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" style={{ padding: '12px', borderRadius: '12px', backgroundColor: '#F5F1E9', border: '1px solid #D6CFC0' }}>
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">x-api-key Header</label>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#59524A', marginBottom: '4px' }}>x-api-key Header</label>
                   <input
                     type="text"
                     placeholder="cp_lpt_..."
                     value={sandboxApiKey}
                     onChange={(e) => setSandboxApiKey(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-emerald-400 placeholder-slate-600"
+                    style={{ width: '100%', padding: '6px 10px', borderRadius: '8px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '12px', fontFamily: 'monospace', color: '#0F6E64' }}
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">Filter Status</label>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#59524A', marginBottom: '4px' }}>Filter Status</label>
                   <select
                     value={sandboxStatus}
                     onChange={(e) => setSandboxStatus(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200"
+                    style={{ width: '100%', padding: '6px 10px', borderRadius: '8px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '12px', color: '#211D17' }}
                   >
                     <option value="">All Statuses</option>
                     <option value="CRITICAL">CRITICAL</option>
@@ -349,11 +340,11 @@ export default function NgoPortal() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">Filter Category</label>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#59524A', marginBottom: '4px' }}>Filter Category</label>
                   <select
                     value={sandboxCategory}
                     onChange={(e) => setSandboxCategory(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-200"
+                    style={{ width: '100%', padding: '6px 10px', borderRadius: '8px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '12px', color: '#211D17' }}
                   >
                     <option value="">All Categories</option>
                     <option value="GARBAGE_DUMP">GARBAGE_DUMP</option>
@@ -364,18 +355,18 @@ export default function NgoPortal() {
                 </div>
               </div>
 
-              <div className="flex justify-end">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
                 <button
                   onClick={handleRunSandbox}
                   disabled={sandboxLoading}
-                  className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-all shadow-md cursor-pointer"
+                  style={{ padding: '8px 16px', borderRadius: '6px', backgroundColor: '#0F6E64', color: '#FFFFFF', fontWeight: 600, fontSize: '12px', border: 'none', cursor: 'pointer' }}
                 >
                   {sandboxLoading ? 'Executing...' : 'Execute API Query'}
                 </button>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between text-xs font-semibold text-slate-400 mb-1">
+              <div style={{ marginTop: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600, color: '#59524A', marginBottom: '4px' }}>
                   <span>cURL Request Snippet</span>
                   <button
                     onClick={() => {
@@ -383,21 +374,21 @@ export default function NgoPortal() {
                       setCopiedCode(true);
                       setTimeout(() => setCopiedCode(false), 2000);
                     }}
-                    className="flex items-center gap-1 text-slate-400 hover:text-white"
+                    style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#59524A', background: 'none', border: 'none', cursor: 'pointer' }}
                   >
-                    {copiedCode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedCode ? <Check style={{ width: '14px', height: '14px', color: '#157F4A' }} /> : <Copy style={{ width: '14px', height: '14px' }} />}
                     <span>{copiedCode ? 'Copied' : 'Copy'}</span>
                   </button>
                 </div>
-                <pre className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-slate-300 overflow-x-auto">
+                <pre style={{ padding: '12px', borderRadius: '12px', backgroundColor: '#332E26', border: '1px solid #59524A', fontSize: '11px', fontFamily: 'monospace', color: '#F5F1E9', overflowX: 'auto', margin: 0 }}>
                   {curlCommand}
                 </pre>
               </div>
 
               {sandboxResult && (
-                <div>
-                  <div className="text-xs font-semibold text-slate-400 mb-1">Live JSON Output</div>
-                  <pre className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-[11px] font-mono text-emerald-400 max-h-[320px] overflow-y-auto">
+                <div style={{ marginTop: '16px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#59524A', marginBottom: '4px' }}>Live JSON Output</div>
+                  <pre style={{ padding: '16px', borderRadius: '12px', backgroundColor: '#332E26', border: '1px solid #59524A', fontSize: '11px', fontFamily: 'monospace', color: '#F5F1E9', maxHeight: '320px', overflowY: 'auto', margin: 0 }}>
                     {JSON.stringify(sandboxResult, null, 2)}
                   </pre>
                 </div>

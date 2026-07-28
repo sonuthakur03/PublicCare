@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { User } from '@/types';
-import { Shield, MapPin, Building2, Key, PlusCircle, Activity, UserCheck, ChevronDown, LogIn, UserPlus, Users, LogOut } from 'lucide-react';
+import { Shield, MapPin, Building2, Key, PlusCircle, Activity, UserCheck, ChevronDown, LogIn, UserPlus, Users, LogOut, Radio } from 'lucide-react';
 
 interface NavbarProps {
   criticalCount?: number;
@@ -56,135 +56,151 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
     }
   };
 
-  const navItems = [
-    { label: 'Lalitpur Feed', href: '/', icon: MapPin },
-    { label: 'Raise Issue', href: '/raise-issue', icon: PlusCircle },
-    { label: 'Municipality Admin', href: '/admin', icon: Building2 },
-    { label: 'NGO API Portal', href: '/ngo-portal', icon: Key },
-  ];
+  const getNavItems = () => {
+    if (!activeUser) return [];
 
-  if (activeUser?.role === 'municipality_admin') {
-    navItems.push({ label: 'Officer Users', href: '/admin/users', icon: Users });
-  }
+    const baseItems = [{ label: 'Community Feed', href: '/', icon: MapPin }];
+    
+    if (activeUser.role === 'user') {
+      return [...baseItems, { label: 'Report Issue', href: '/raise-issue', icon: PlusCircle }];
+    }
+    
+    if (activeUser.role === 'municipality_admin') {
+      return [
+        ...baseItems,
+        { label: 'Report Issue', href: '/raise-issue', icon: PlusCircle },
+        { label: 'Dispatch Console', href: '/admin', icon: Building2 },
+        { label: 'Manage Officers', href: '/admin/users', icon: Users }
+      ];
+    }
+    
+    if (activeUser.role === 'ngo') {
+      return [
+        ...baseItems,
+        { label: 'Data Portal', href: '/ngo-portal', icon: Key }
+      ];
+    }
+
+    return baseItems;
+  };
+
+  const navItems = getNavItems();
 
   return (
-    <header className="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3.5 backdrop-blur-md">
+    <header className="sticky top-0 z-50 bg-[#FFFFFF] border-b border-[#D6CFC0] px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-blue-500 p-0.5 shadow-lg shadow-sky-950/40 group-hover:scale-105 transition-transform duration-200">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Activity className="w-5 h-5 text-sky-400 group-hover:text-sky-300 transition-colors" />
+        <Link href="/" className="flex items-center gap-4 group">
+          <div className="relative w-12 h-12 rounded-[12px] bg-[var(--primary)] p-0.5 group-hover:scale-105 transition-transform duration-200" style={{boxShadow: 'var(--shadow-level-1)'}}>
+            <div className="w-full h-full bg-[#FFFFFF] rounded-[10px] flex items-center justify-center">
+              <Activity className="w-6 h-6 text-[var(--primary)] group-hover:text-[var(--primary-container)] transition-colors" />
             </div>
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-xl tracking-tight text-white font-sans">CivicPulse</span>
-              <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                Lalitpur City
+            <div className="flex items-center gap-3">
+              <span className="font-display font-bold text-[24px] tracking-tight text-[#211D17]">CivicPulse</span>
+              <span className="text-[11px] font-semibold tracking-wider px-2.5 py-0.5 rounded-[6px] bg-[#14837A] text-[#FFFFFF] border border-[#0F6E64] uppercase">
+                Lalitpur
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-normal hidden sm:block">Municipal Hygiene Intelligence</p>
+            <p className="text-[13px] text-[#59524A] hidden sm:block">Municipal Hygiene Intelligence</p>
           </div>
         </Link>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-1 bg-slate-900/60 p-1 rounded-xl border border-slate-800">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-                }`}
-              >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-sky-400' : 'text-slate-400'}`} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        {activeUser && navItems.length > 0 && (
+          <nav className="hidden md:flex items-center gap-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-[6px] text-[14px] font-medium transition-all duration-200 ${
+                    isActive
+                      ? 'bg-[#0F6E64] text-[#FFFFFF]'
+                      : 'text-[#59524A] hover:text-[#211D17] hover:bg-[#F5F1E9]'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#FFFFFF]' : 'text-[#59524A]'}`} />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        )}
 
         {/* User Session & Auth Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           
           {activeUser ? (
-            <div className="relative">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-slate-200 hover:border-sky-500 transition-all cursor-pointer"
-              >
-                <UserCheck className="w-4 h-4 text-sky-400" />
-                <span className="max-w-[120px] truncate hidden sm:inline">{activeUser.name}</span>
-                <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-bold bg-sky-500/20 text-sky-300">
-                  {activeUser.role}
-                </span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-              </button>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="flex items-center gap-3 px-4 py-2 rounded-[6px] bg-[#FFFFFF] border border-[#7A7266] text-[14px] font-medium text-[#211D17] hover:border-[#0F6E64] transition-all cursor-pointer"
+                >
+                  <UserCheck className="w-4 h-4 text-[#0F6E64]" />
+                  <span className="max-w-[120px] truncate hidden sm:inline">{activeUser.name}</span>
+                  <span className="px-2 py-0.5 rounded-[6px] text-[11px] font-semibold tracking-wider uppercase bg-[#14837A] text-[#FFFFFF]">
+                    {activeUser.role.replace('_', ' ')}
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-[#59524A]" />
+                </button>
 
-              {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 glass-panel rounded-2xl border border-slate-700 p-2 shadow-2xl z-50 space-y-1 animate-in fade-in duration-150">
-                  <div className="px-3 py-2 border-b border-slate-800 text-xs">
-                    <p className="font-bold text-white truncate">{activeUser.name}</p>
-                    <p className="text-[11px] text-slate-400 truncate">{activeUser.email}</p>
-                  </div>
+                {userMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-[#FFFFFF] rounded-[12px] border border-[#D6CFC0] p-3 z-50 space-y-2 animate-in fade-in duration-150" style={{boxShadow: 'var(--shadow-level-2)'}}>
+                    <div className="px-3 py-2 border-b border-[#D6CFC0] pb-3 mb-2">
+                      <p className="font-bold text-[14px] text-[#211D17] truncate">{activeUser.name}</p>
+                      <p className="text-[12px] text-[#59524A] truncate">{activeUser.email}</p>
+                    </div>
 
-                  {activeUser.role === 'municipality_admin' && (
-                    <Link
-                      href="/admin/users"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2 w-full p-2 rounded-xl text-xs font-semibold hover:bg-slate-800 text-slate-200"
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center gap-2 w-full p-2.5 rounded-[6px] text-[14px] font-medium hover:bg-[#FBE3E0] text-[#B3261E] transition-colors"
                     >
-                      <Users className="w-4 h-4 text-sky-400" />
-                      <span>Manage Admin Users</span>
-                    </Link>
-                  )}
-
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 w-full p-2 rounded-xl text-xs font-semibold hover:bg-rose-950/60 text-rose-300 transition-colors"
-                  >
-                    <LogOut className="w-4 h-4 text-rose-400" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              )}
+                      <LogOut className="w-4 h-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              <Link
+                href="/raise-issue"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-[6px] bg-[#0F6E64] text-[#FFFFFF] text-[14px] font-semibold hover:bg-[#14837A] active:scale-[0.98] transition-all"
+                style={{boxShadow: 'var(--shadow-level-1)'}}
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span className="hidden sm:inline">Report Issue</span>
+              </Link>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 text-slate-200 text-xs font-semibold hover:bg-slate-800 transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-[6px] border border-[#0F6E64] text-[#0F6E64] text-[14px] font-semibold hover:bg-[#0F6E64] hover:text-[#FFFFFF] transition-colors"
               >
-                <LogIn className="w-3.5 h-3.5 text-sky-400" />
+                <LogIn className="w-4 h-4" />
                 <span>Sign In</span>
               </Link>
               <Link
                 href="/register"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition-colors shadow-md"
+                className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-[6px] bg-[#0F6E64] hover:bg-[#14837A] text-[#FFFFFF] text-[14px] font-semibold transition-colors"
+                style={{boxShadow: 'var(--shadow-level-1)'}}
               >
-                <UserPlus className="w-3.5 h-3.5" />
+                <UserPlus className="w-4 h-4" />
                 <span>Register</span>
               </Link>
             </div>
           )}
 
-          <Link
-            href="/raise-issue"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 text-white text-sm font-semibold hover:from-sky-500 hover:to-blue-500 shadow-md shadow-sky-950/40 active:scale-[0.98] transition-all"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span className="hidden sm:inline">Raise Issue</span>
-          </Link>
         </div>
 
       </div>
     </header>
   );
 }
+

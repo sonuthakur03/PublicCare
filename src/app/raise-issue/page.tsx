@@ -20,7 +20,6 @@ export default function RaiseIssuePage() {
   const [locationLat, setLocationLat] = useState<number>(27.6727);
   const [locationLng, setLocationLng] = useState<number>(85.3253);
 
-  // Cloudinary Image Upload state
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -147,10 +146,10 @@ export default function RaiseIssuePage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
         <Navbar />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-xs text-slate-500 animate-pulse">Verifying Citizen Authentication...</p>
+          <p style={{ fontSize: '12px', color: '#59524A' }} className="animate-pulse">Verifying Citizen Authentication...</p>
         </main>
       </div>
     );
@@ -158,21 +157,21 @@ export default function RaiseIssuePage() {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
         <Navbar />
         <main className="flex-1 max-w-md w-full mx-auto px-4 py-20 text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center mx-auto">
-            <Lock className="w-8 h-8 text-sky-400" />
+          <div style={{ width: '64px', height: '64px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
+            <Lock style={{ width: '32px', height: '32px', color: '#0F6E64' }} />
           </div>
-          <h1 className="text-xl font-bold text-white">Sign In Required to Raise Report</h1>
-          <p className="text-xs text-slate-400">
+          <h1 style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'var(--font-display)', color: '#211D17' }}>Sign In Required to Raise Report</h1>
+          <p style={{ fontSize: '12px', color: '#59524A' }}>
             Please sign in or create a citizen account to pin and report hygiene issues in Lalitpur Municipality.
           </p>
           <button
             onClick={() => router.push('/login')}
-            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-lg transition-all cursor-pointer"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '10px', borderRadius: '6px', backgroundColor: '#0F6E64', color: '#FFFFFF', fontWeight: 'bold', fontSize: '12px', border: 'none', cursor: 'pointer', marginTop: '16px' }}
           >
-            <LogIn className="w-4 h-4" />
+            <LogIn style={{ width: '16px', height: '16px' }} />
             <span>Sign In to Continue</span>
           </button>
         </main>
@@ -181,72 +180,72 @@ export default function RaiseIssuePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
       <Navbar />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-8 space-y-6">
         
-        <div className="flex items-center justify-between">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button
             onClick={() => router.push('/')}
-            className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-sky-400 transition-colors"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 600, color: '#59524A', background: 'none', border: 'none', cursor: 'pointer' }}
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft style={{ width: '16px', height: '16px' }} />
             <span>Back to Lalitpur Feed</span>
           </button>
 
-          <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/30">
+          <span style={{ fontSize: '12px', fontWeight: 'bold', padding: '4px 12px', borderRadius: '9999px', backgroundColor: '#E1F0EA', color: '#0B5850', border: '1px solid #157F4A' }}>
             Lalitpur Citizen Portal
           </span>
         </div>
 
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-2">
-          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-            <MapPin className="w-6 h-6 text-sky-400" />
+        <div style={{ padding: '24px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }} className="space-y-2">
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#211D17', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-display)' }}>
+            <MapPin style={{ width: '24px', height: '24px', color: '#0F6E64' }} />
             Raise a Municipal Hygiene Report
           </h1>
-          <p className="text-xs text-slate-300">
+          <p style={{ fontSize: '12px', color: '#59524A' }}>
             Pin the location on the Lalitpur map below and upload photo evidence. Reports with ≥ 3 upvotes automatically escalate to Critical status for sanitation crew dispatch.
           </p>
         </div>
 
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+          <div style={{ padding: '16px', borderRadius: '12px', backgroundColor: '#FBE3E0', border: '1px solid #B3261E', color: '#8C2A22', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertCircle style={{ width: '16px', height: '16px', flexShrink: 0 }} />
             <span>{error}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2 font-bold animate-bounce">
-            <Check className="w-5 h-5 shrink-0 text-emerald-400" />
+          <div style={{ padding: '16px', borderRadius: '12px', backgroundColor: '#E1F0EA', border: '1px solid #157F4A', color: '#0B5850', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
+            <Check style={{ width: '20px', height: '20px', flexShrink: 0 }} />
             <span>{successMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+        <form onSubmit={handleSubmit} style={{ padding: '24px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           <div>
-            <label className="block text-xs font-bold text-slate-200 mb-1.5">Issue Title *</label>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17', marginBottom: '6px' }}>Issue Title *</label>
             <input
               type="text"
               required
               placeholder="e.g. Garbage Heap blocking Mangal Bazar Walkway"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all"
+              style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '14px', color: '#211D17' }}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-200 mb-1.5">Hygiene & Waste Category *</label>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17', marginBottom: '6px' }}>Hygiene & Waste Category *</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as IssueCategory)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-100 focus:outline-none focus:border-sky-500"
+              style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '14px', color: '#211D17' }}
             >
               {categories.map((c) => (
-                <option key={c.value} value={c.value} className="bg-slate-900 text-slate-100">
+                <option key={c.value} value={c.value}>
                   {c.label}
                 </option>
               ))}
@@ -254,19 +253,19 @@ export default function RaiseIssuePage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-200 mb-1.5">Detailed Description *</label>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17', marginBottom: '6px' }}>Detailed Description *</label>
             <textarea
               required
               rows={4}
               placeholder="Describe the problem, odor severity, public hazard, or obstruction level..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+              style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '14px', color: '#211D17', resize: 'vertical' }}
             />
           </div>
 
-          <div className="space-y-3 pt-2 border-t border-slate-800/80">
-            <label className="block text-xs font-bold text-slate-200">
+          <div style={{ paddingTop: '16px', borderTop: '1px solid #D6CFC0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17' }}>
               Select Location on Lalitpur Map *
             </label>
 
@@ -277,63 +276,63 @@ export default function RaiseIssuePage() {
             />
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Landmark / Street Address *</label>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#59524A', marginBottom: '4px' }}>Landmark / Street Address *</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Near Patan Durbar Square Heritage Entrance, Ward 16"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+                style={{ width: '100%', padding: '10px 16px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '12px', color: '#211D17' }}
               />
             </div>
           </div>
 
-          <div className="space-y-2 pt-2 border-t border-slate-800/80">
-            <label className="block text-xs font-bold text-slate-200">Photo Evidence (Cloudinary Upload)</label>
+          <div style={{ paddingTop: '16px', borderTop: '1px solid #D6CFC0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17' }}>Photo Evidence (Cloudinary Upload)</label>
             
-            <div className="relative border-2 border-dashed border-slate-700 hover:border-sky-500 rounded-2xl p-6 text-center bg-slate-900/60 transition-colors cursor-pointer group">
+            <div style={{ position: 'relative', border: '2px dashed #D6CFC0', borderRadius: '12px', padding: '24px', textAlign: 'center', backgroundColor: '#F5F1E9', cursor: 'pointer' }}>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageFileChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
               />
 
               {previewUrl ? (
-                <div className="flex flex-col items-center gap-3">
-                  <img src={previewUrl} alt="Preview" className="w-36 h-36 object-cover rounded-xl border border-sky-500 shadow-md" />
-                  <span className="text-xs text-sky-400 font-semibold flex items-center gap-1">
-                    {uploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+                  <img src={previewUrl} alt="Preview" style={{ width: '144px', height: '144px', objectFit: 'cover', borderRadius: '12px', border: '1px solid #0F6E64', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }} />
+                  <span style={{ fontSize: '12px', color: '#0F6E64', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {uploadingImage ? <Loader2 style={{ width: '14px', height: '14px' }} className="animate-spin" /> : <Check style={{ width: '14px', height: '14px' }} />}
                     {uploadingImage ? 'Uploading to Cloudinary...' : 'Uploaded to Cloudinary CDN'}
                   </span>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-2">
-                  <UploadCloud className="w-8 h-8 text-sky-400 group-hover:scale-110 transition-transform" />
-                  <p className="text-xs font-semibold text-slate-300">Click or Drag & Drop Photo Evidence</p>
-                  <p className="text-[11px] text-slate-500">Supports PNG, JPG, WEBP up to 10MB</p>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <UploadCloud style={{ width: '32px', height: '32px', color: '#0F6E64' }} />
+                  <p style={{ fontSize: '12px', fontWeight: 600, color: '#211D17', margin: 0 }}>Click or Drag & Drop Photo Evidence</p>
+                  <p style={{ fontSize: '11px', color: '#59524A', margin: 0 }}>Supports PNG, JPG, WEBP up to 10MB</p>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px', paddingTop: '16px', borderTop: '1px solid #D6CFC0' }}>
             <button
               type="button"
               onClick={() => router.push('/')}
-              className="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 text-xs font-semibold hover:bg-slate-800 transition-colors"
+              style={{ padding: '10px 20px', borderRadius: '12px', border: '1px solid #D6CFC0', color: '#59524A', fontSize: '12px', fontWeight: 600, backgroundColor: 'transparent', cursor: 'pointer' }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-sky-950/50 transition-all cursor-pointer"
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', borderRadius: '6px', backgroundColor: '#0F6E64', color: '#FFFFFF', fontWeight: 'bold', fontSize: '12px', border: 'none', cursor: 'pointer' }}
             >
               {submitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 style={{ width: '16px', height: '16px' }} className="animate-spin" />
                   Submitting to Lalitpur City...
                 </>
               ) : (

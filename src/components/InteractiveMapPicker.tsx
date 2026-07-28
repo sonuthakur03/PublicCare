@@ -47,7 +47,8 @@ export default function InteractiveMapPicker({ onLocationSelect, initialLat = 27
           maxBoundsViscosity: 0.8
         });
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        // Using light CartoDB maps for a warm/light theme.
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
           attribution: '&copy; OpenStreetMap &copy; Lalitpur Municipality',
           subdomains: 'abcd',
           maxZoom: 19
@@ -56,7 +57,7 @@ export default function InteractiveMapPicker({ onLocationSelect, initialLat = 27
         const pinIcon = L.divIcon({
           html: `
             <div style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
-              <div style="background: #0284C7; border: 3px solid #ffffff; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.6); animation: bounce 1s infinite alternate;">
+              <div style="background: #0F6E64; border: 3px solid #ffffff; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(33, 29, 23, 0.2); animation: bounce 1s infinite alternate;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
                   <circle cx="12" cy="10" r="3"/>
@@ -106,19 +107,19 @@ export default function InteractiveMapPicker({ onLocationSelect, initialLat = 27
   }, []);
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
-        <span className="flex items-center gap-1.5 text-sky-400">
-          <MapPin className="w-4 h-4" />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '12px', fontWeight: 600, color: '#59524A' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#0F6E64' }}>
+          <MapPin style={{ width: '16px', height: '16px' }} />
           Click Map to Pin Location in Lalitpur
         </span>
-        <span className="text-[11px] text-slate-400 font-mono">
+        <span style={{ fontSize: '11px', color: '#7A7266', fontFamily: 'monospace' }}>
           Pinned ({selectedCoords.lat.toFixed(4)}, {selectedCoords.lng.toFixed(4)})
         </span>
       </div>
 
-      <div className="relative w-full h-[280px] rounded-xl glass-panel p-1 border border-slate-800 overflow-hidden shadow-lg">
-        <div ref={mapContainerRef} className="w-full h-full rounded-lg" />
+      <div style={{ position: 'relative', width: '100%', height: '280px', borderRadius: '12px', backgroundColor: '#FFFFFF', padding: '4px', border: '1px solid #D6CFC0', overflow: 'hidden', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
+        <div ref={mapContainerRef} style={{ width: '100%', height: '100%', borderRadius: '8px' }} />
       </div>
     </div>
   );
