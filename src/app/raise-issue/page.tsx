@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import InteractiveMapPicker from '@/components/InteractiveMapPicker';
+import LocationAccessBadge from '@/components/LocationAccessBadge';
 import { IssueCategory, User } from '@/types';
 import { MapPin, Camera, AlertCircle, Check, Loader2, ArrowLeft, UploadCloud, Lock, LogIn } from 'lucide-react';
 
@@ -265,9 +266,18 @@ export default function RaiseIssuePage() {
           </div>
 
           <div style={{ paddingTop: '16px', borderTop: '1px solid #D6CFC0', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17' }}>
-              Select Location on Lalitpur Map *
-            </label>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 'bold', color: '#211D17' }}>
+                Select Location on Lalitpur Map *
+              </label>
+              <LocationAccessBadge
+                compact
+                onLocationDetected={(lat, lng) => {
+                  setLocationLat(lat);
+                  setLocationLng(lng);
+                }}
+              />
+            </div>
 
             <InteractiveMapPicker
               onLocationSelect={handleLocationSelect}

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import CivicMap from '@/components/CivicMap';
 import IssueCard from '@/components/IssueCard';
+import LocationAccessBadge from '@/components/LocationAccessBadge';
+import NearbyChatWidget from '@/components/NearbyChatWidget';
 import { Issue, IssueCategory, IssueStatus, StatsSummary, User } from '@/types';
 import { Search, Filter, AlertTriangle, ShieldCheck, Flame, Layers, Sparkles, RefreshCw, PlusCircle, MapPin, ThumbsUp, Building2, ChevronRight } from 'lucide-react';
 
@@ -16,6 +18,8 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
   const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [userLat, setUserLat] = useState<number>(27.6727);
+  const [userLng, setUserLng] = useState<number>(85.3253);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -203,6 +207,13 @@ export default function Home() {
       {/* Main Container */}
       <main style={{ flex: 1, maxWidth: '80rem', width: '100%', margin: '0 auto', padding: '2rem 1rem', display: 'flex', flexDirection: 'column', gap: '3rem' }}>
         
+        {/* Citizen Location Access Prompt */}
+        <LocationAccessBadge
+          onLocationDetected={(lat, lng) => {
+            setUserLat(lat);
+            setUserLng(lng);
+          }}
+        />
         {/* Escalation Toast Alert */}
         {alertMessage && (
           <div style={{ padding: '1.5rem', borderRadius: '12px', backgroundColor: '#FBE3E0', border: '1px solid #B3261E', color: '#8C2A22', boxShadow: '0 8px 24px rgba(33,29,23,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem' }}>
@@ -385,6 +396,9 @@ export default function Home() {
         </section>
 
       </main>
+
+      {/* Real-time WebSocket Nearby Anonymous Network Chat */}
+      <NearbyChatWidget currentUser={user} userLat={userLat} userLng={userLng} />
 
     </div>
   );

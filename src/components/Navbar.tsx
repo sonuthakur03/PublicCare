@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { User } from '@/types';
 import { Shield, MapPin, Building2, Key, PlusCircle, Activity, UserCheck, ChevronDown, LogIn, UserPlus, Users, LogOut, Radio } from 'lucide-react';
+import LocationAccessBadge from '@/components/LocationAccessBadge';
 
 interface NavbarProps {
   criticalCount?: number;
@@ -133,8 +134,12 @@ export default function Navbar({ criticalCount = 2 }: NavbarProps) {
         )}
 
         {/* User Session & Auth Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           
+          <div className="hidden lg:block">
+            <LocationAccessBadge compact />
+          </div>
+
           {activeUser ? (
             <div className="flex items-center gap-4">
               <div className="relative">
