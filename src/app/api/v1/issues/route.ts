@@ -27,6 +27,9 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status') as IssueStatus | null;
     const category = searchParams.get('category') as IssueCategory | null;
     const query = searchParams.get('query') || undefined;
+    const latStr = searchParams.get('lat');
+    const lngStr = searchParams.get('lng');
+    const radiusStr = searchParams.get('radius');
 
     // NGO API Key verification if provided
     const apiKeyHeader = request.headers.get('x-api-key');
@@ -42,11 +45,28 @@ export async function GET(request: NextRequest) {
     }
 
     const currentUser = getAuthenticatedUser(request);
-    const issues = await db.getIssues(currentUser, {
+    let issues = await db.getIssues(currentUser, {
       status: status || undefined,
       category: category || undefined,
       query
     });
+
+    if (latStr && lngStr && radiusStr) {
+      const lat = parseFloat(latStr);
+      const lng = parseFloat(lngStr);
+      const radius = parseFloat(radiusStr);
+      
+      const toRad = (v: number) => (v * Math.PI) / 180;
+      const haversine = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+        const R = 6371;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lng2 - lng1);
+        const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      };
+
+      issues = issues.filter(i => i.locationLat && i.locationLng && haversine(lat, lng, i.locationLat, i.locationLng) <= radius);
+    }
 
     const stats = await db.getStatsSummary();
 

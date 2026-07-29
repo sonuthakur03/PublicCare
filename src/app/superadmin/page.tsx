@@ -14,6 +14,7 @@ import {
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import html2canvas from 'html2canvas';
+import LoadingScreen from '@/components/LoadingScreen';
 
 interface User {
   id: string;
@@ -220,8 +221,35 @@ export default function SuperadminDashboard() {
     }
   };
 
+  const handleAdAction = async (adId: string, action: 'approve' | 'reject' | 'hold') => {
+    try {
+      const body: any = {};
+      if (action === 'approve') { body.isApproved = true; body.isActive = true; }
+      else if (action === 'reject') { body.isApproved = false; body.isActive = false; }
+      else if (action === 'hold') { body.isActive = false; }
+      await fetch(`/api/v1/ads/${adId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      fetchAllData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveAd = async (adId: string) => {
+    if (!confirm('Are you sure you want to permanently remove this ad?')) return;
+    try {
+      await fetch(`/api/v1/ads/${adId}`, { method: 'DELETE' });
+      fetchAllData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'var(--surface)' }}>Loading...</div>;
+    return <LoadingScreen />;
   }
 
   if (!currentUser) return null;
@@ -489,6 +517,7 @@ export default function SuperadminDashboard() {
                     <th style={{ padding: '16px' }}>Advertiser</th>
                     <th style={{ padding: '16px' }}>Status</th>
                     <th style={{ padding: '16px' }}>Stats</th>
+                    <th style={{ padding: '16px' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -502,11 +531,43 @@ export default function SuperadminDashboard() {
                       <td style={{ padding: '16px', color: 'var(--on-surface-variant)' }}>
                         {ad.impressions || 0} views, {ad.clicks || 0} clicks
                       </td>
+                      <td style={{ padding: '16px' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                          {!ad.isApproved && (
+                            <button
+                              onClick={() => handleAdAction(ad.id, 'approve')}
+                              style={{ ...buttonStyle, backgroundColor: '#10B981', color: 'white', padding: '6px 14px', fontSize: '13px', borderRadius: '6px' }}
+                            >
+                              Approve
+                            </button>
+                          )}
+                          {ad.isApproved && ad.isActive && (
+                            <button
+                              onClick={() => handleAdAction(ad.id, 'hold')}
+                              style={{ ...buttonStyle, backgroundColor: '#F59E0B', color: 'white', padding: '6px 14px', fontSize: '13px', borderRadius: '6px' }}
+                            >
+                              Hold
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleAdAction(ad.id, 'reject')}
+                            style={{ ...buttonStyle, backgroundColor: 'transparent', color: '#EF4444', border: '1px solid #EF4444', padding: '6px 14px', fontSize: '13px', borderRadius: '6px' }}
+                          >
+                            Reject
+                          </button>
+                          <button
+                            onClick={() => handleRemoveAd(ad.id)}
+                            style={{ ...buttonStyle, backgroundColor: '#EF4444', color: 'white', padding: '6px 14px', fontSize: '13px', borderRadius: '6px' }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                   {ads.length === 0 && (
                     <tr>
-                      <td colSpan={4} style={{ padding: '32px', textAlign: 'center', color: 'var(--on-surface-variant)' }}>
+                      <td colSpan={5} style={{ padding: '32px', textAlign: 'center', color: 'var(--on-surface-variant)' }}>
                         No ads found.
                       </td>
                     </tr>

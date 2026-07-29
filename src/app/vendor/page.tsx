@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { Store, MapPin, Megaphone, FileText, TrendingUp, Eye, MousePointer2, Clock, CheckCircle, XCircle, ArrowRight, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function VendorDashboard() {
   const router = useRouter();
@@ -50,7 +51,7 @@ export default function VendorDashboard() {
     checkAuth();
   }, [router]);
 
-  if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading dashboard...</div>;
+  if (loading) return <LoadingScreen />;
 
   const totalImpressions = ads.reduce((sum, ad) => sum + (ad.impressions || 0), 0);
   const pendingTenders = tenders.filter(t => t.status === 'SUBMITTED').length;
