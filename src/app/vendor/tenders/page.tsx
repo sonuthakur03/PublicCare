@@ -294,7 +294,7 @@ function VendorTendersContent() {
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: '8px', color: 'var(--on-surface)', fontWeight: 'bold', fontSize: '14px' }}>Estimated Timeline</label>
-                <input required type="text" value={newTender.timeline} onChange={e => setNewTender({...newTender, timeline: e.target.value})} placeholder="e.g., 2 weeks, 3 days" style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid var(--outline-variant)', backgroundColor: 'var(--surface)' }} />
+                <input required type="number" value={newTender.timeline} onChange={e => setNewTender({...newTender, timeline: e.target.value})} placeholder="e.g., 14 (in days)" style={{ width: '100%', padding: '12px', borderRadius: '6px', border: '1px solid var(--outline-variant)', backgroundColor: 'var(--surface)' }} />
               </div>
               <div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
                 <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, padding: '12px', borderRadius: '6px', border: '1px solid var(--outline-variant)', backgroundColor: 'transparent', cursor: 'pointer', fontWeight: 'bold' }}>Cancel</button>

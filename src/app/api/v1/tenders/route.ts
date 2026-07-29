@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { issueId, proposalText, estimatedCostNpr, estimatedDays } = body;
 
-    if (!issueId || !proposalText || estimatedCostNpr === undefined || estimatedDays === undefined) {
-      return NextResponse.json({ error: 'Required fields missing' }, { status: 400 });
+    if (!issueId || !proposalText || estimatedCostNpr === undefined || estimatedCostNpr === null || isNaN(estimatedCostNpr) || estimatedDays === undefined || estimatedDays === null || isNaN(estimatedDays)) {
+      return NextResponse.json({ error: 'Required fields missing or invalid' }, { status: 400 });
     }
 
     const newTender = await TenderModel.create(vendor.id, issueId, {
