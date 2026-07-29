@@ -46,7 +46,7 @@ export default function AdCard({ ad, onAdClick }: AdCardProps) {
 
   return (
     <div 
-      className="bg-[#FFFFFF] rounded-[12px] p-6 flex flex-col transition-shadow hover:shadow-[var(--shadow-level-2)]"
+      className="bg-[#FFFFFF] rounded-[12px] p-4 flex flex-col transition-shadow hover:shadow-[var(--shadow-level-2)]"
       style={{
         border: '1px solid #D6CFC0',
         borderLeft: '3px solid',
@@ -66,16 +66,16 @@ export default function AdCard({ ad, onAdClick }: AdCardProps) {
       </div>
 
       <div className="mb-4 flex-1">
-        <h3 className="text-[1.25rem] font-bold text-[#211D17] font-display mb-2 leading-tight">
+        <h3 className="text-[1rem] font-bold text-[#211D17] font-display mb-2 leading-tight">
           {ad.title}
         </h3>
-        <p className="text-[#59524A] text-[14px] line-clamp-2">
+        <p className="text-[#59524A] text-[13px] line-clamp-2">
           {ad.description}
         </p>
       </div>
 
       {ad.imageUrl && (
-        <div className="relative w-full h-32 mb-4 rounded-[8px] overflow-hidden bg-[#F5F1E9]">
+        <div className="relative w-full h-24 mb-4 rounded-[8px] overflow-hidden bg-[#F5F1E9]">
           <img 
             src={ad.imageUrl} 
             alt={ad.title}
@@ -90,7 +90,7 @@ export default function AdCard({ ad, onAdClick }: AdCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleClick}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#0F6E64] hover:bg-[#14837A] text-[#FFFFFF] rounded-[6px] font-semibold text-[14px] transition-colors mb-4"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#0F6E64] hover:bg-[#14837A] text-[#FFFFFF] rounded-[6px] font-semibold text-[13px] transition-colors mb-4"
         >
           <span>Learn More</span>
           <ExternalLink className="w-4 h-4" />

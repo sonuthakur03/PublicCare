@@ -28,6 +28,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
+  const [radiusFilter, setRadiusFilter] = useState<string>('ALL');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -55,6 +56,11 @@ export default function Home() {
       if (statusFilter !== 'ALL') params.append('status', statusFilter);
       if (categoryFilter !== 'ALL') params.append('category', categoryFilter);
       if (searchQuery) params.append('query', searchQuery);
+      if (radiusFilter !== 'ALL') {
+        params.append('lat', String(userLat));
+        params.append('lng', String(userLng));
+        params.append('radius', radiusFilter);
+      }
 
       const res = await fetch(`/api/v1/issues?${params.toString()}`);
       const data = await res.json();
@@ -84,7 +90,7 @@ export default function Home() {
     if (user) {
       fetchIssues();
     }
-  }, [user, statusFilter, categoryFilter, searchQuery]);
+  }, [user, statusFilter, categoryFilter, searchQuery, radiusFilter]);
 
   const handleUpvote = async (issueId: string) => {
     try {
@@ -343,6 +349,20 @@ export default function Home() {
                   </option>
                 ))}
               </select>
+
+              <select
+                value={radiusFilter}
+                onChange={(e) => setRadiusFilter(e.target.value)}
+                style={{ padding: '0.75rem 1rem', borderRadius: '8px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', fontSize: '0.875rem', color: '#211D17', outline: 'none', cursor: 'pointer' }}
+                onFocus={(e) => e.target.style.borderColor = '#0F6E64'}
+                onBlur={(e) => e.target.style.borderColor = '#D6CFC0'}
+              >
+                <option value="ALL">All Lalitpur</option>
+                <option value="1">Within 1 km</option>
+                <option value="3">Within 3 km</option>
+                <option value="5">Within 5 km</option>
+                <option value="10">Within 10 km</option>
+              </select>
             </div>
           </div>
 
@@ -398,9 +418,10 @@ export default function Home() {
                 ) : issues.length === 0 ? (
                   <div style={{ padding: '6rem 0', textAlign: 'center', color: '#7A7266', fontSize: '1.125rem' }}>No issues match the selected filters.</div>
                 ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2.5rem' }}>
-                    {issues.reduce((acc: any[], issue, index) => {
-                      acc.push(
+                  <div style={{ display: 'grid', gridTemplateColumns: ads.length > 0 ? '1fr 280px' : '1fr', gap: '2rem' }}>
+                    {/* Main Feed - wider issue cards */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      {issues.map(issue => (
                         <IssueCard
                           key={issue.id}
                           issue={issue}
@@ -408,17 +429,18 @@ export default function Home() {
                           isSelected={selectedIssueId === issue.id}
                           onSelect={() => setSelectedIssueId(issue.id)}
                         />
-                      );
-                      // Every 2nd item (after every 2 issues), insert an ad if available to increase visibility and spacing
-                      if ((index + 1) % 2 === 0 && ads.length > 0) {
-                        const adIndex = Math.floor(index / 2) % ads.length;
-                        const ad = ads[adIndex];
-                        if (ad) {
-                          acc.push(<AdCard key={`ad-${ad.id}-${index}`} ad={ad} />);
-                        }
-                      }
-                      return acc;
-                    }, [])}
+                      ))}
+                    </div>
+                    
+                    {/* Ads Sidebar - thinner */}
+                    {ads.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'sticky', top: '5rem', alignSelf: 'start', maxHeight: 'calc(100vh - 6rem)', overflowY: 'auto' }}>
+                        <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: '#59524A', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Sponsored</h4>
+                        {ads.map(ad => (
+                          <AdCard key={ad.id} ad={ad} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

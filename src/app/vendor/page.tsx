@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar';
 import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { Store, MapPin, Megaphone, FileText, TrendingUp, Eye, MousePointer2, Clock, CheckCircle, XCircle, ArrowRight, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import LoadingScreen from '@/components/LoadingScreen';
 
 export default function VendorDashboard() {
   const router = useRouter();

@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import NearbyVendorsPanel from '@/components/NearbyVendorsPanel';
 import ExportButton from '@/components/ExportButton';
 import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { Issue, IssueStatus, StatsSummary, User, Tender } from '@/types';
-import { Building2, AlertTriangle, CheckCircle2, Clock, ShieldCheck, Filter, Send, MapPin, Lock, LogIn, Download, FileText, TrendingUp, BarChart3, Store } from 'lucide-react';
+import { Building2, AlertTriangle, CheckCircle2, Clock, ShieldCheck, Filter, Send, MapPin, Lock, LogIn, Download, FileText, TrendingUp, BarChart3, Store, Bell } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -184,6 +185,12 @@ export default function AdminDashboard() {
     { id: 'tenders' as const, label: 'Vendor Tenders', icon: FileText },
   ];
 
+  // Build recent activity / notifications
+  const recentActivity = [
+    ...criticalEscalations.slice(0, 3).map(i => ({ type: 'critical' as const, message: `🔴 "${i.title}" escalated to CRITICAL — ${i.netUpvotes} upvotes`, time: i.createdAt })),
+    ...tenders.filter(t => t.status === 'SUBMITTED').slice(0, 3).map(t => ({ type: 'tender' as const, message: `📋 New tender from ${t.vendor?.companyName || 'vendor'} for "${t.issue?.title || 'issue'}"`, time: t.submittedAt })),
+  ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 5);
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
       <Navbar criticalCount={stats?.criticalIssues || 0} />
@@ -278,6 +285,29 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+        {/* Activity & Notifications Panel */}
+        {recentActivity.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{ padding: '24px', borderRadius: '14px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+              <Bell style={{ width: '20px', height: '20px', color: '#0F6E64' }} />
+              <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#211D17', fontFamily: 'var(--font-display)' }}>Recent Activity</h3>
+              <span style={{ fontSize: '11px', fontWeight: 700, padding: '3px 10px', borderRadius: '9999px', backgroundColor: '#FBE3E0', color: '#8C2A22' }}>{recentActivity.length}</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {recentActivity.map((item, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '10px', backgroundColor: item.type === 'critical' ? '#FFF8F7' : '#F5F9F5', border: `1px solid ${item.type === 'critical' ? '#FBEAE1' : '#E1F0EA'}`, fontSize: '13px', color: '#211D17' }}>
+                  <span style={{ flex: 1 }}>{item.message}</span>
+                  <span style={{ fontSize: '11px', color: '#7A7266', whiteSpace: 'nowrap' }}>{new Date(item.time).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Tab Navigation */}
         <div style={{ display: 'flex', gap: '4px', padding: '6px', backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #D6CFC0' }}>
@@ -312,8 +342,9 @@ export default function AdminDashboard() {
         </div>
 
         {/* Dispatch Tab */}
+        <AnimatePresence mode="wait">
         {activeTab === 'dispatch' && (
-          <>
+          <motion.div key="dispatch" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }}>
             {/* Filter Bar */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px', borderRadius: '12px', backgroundColor: '#FFFFFF', border: '1px solid #D6CFC0', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -370,12 +401,12 @@ export default function AdminDashboard() {
                         <td colSpan={6} style={{ padding: '60px 0', textAlign: 'center', color: '#59524A' }}>No workorders found under current filter.</td>
                       </tr>
                     ) : (
-                      issues.map((issue) => (
+                      issues.map((issue, rowIndex) => (
                         <tr 
                           key={issue.id} 
-                          style={{ borderBottom: '1px solid #D6CFC0', backgroundColor: '#FFFFFF', transition: 'background-color 200ms' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F5F1E9'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFFFFF'}
+                          style={{ borderBottom: '1px solid #D6CFC0', backgroundColor: rowIndex % 2 === 0 ? '#FFFFFF' : '#FAFAF8', transition: 'background-color 200ms' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F0EDE6'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = rowIndex % 2 === 0 ? '#FFFFFF' : '#FAFAF8'}  
                         >
                           <td className="py-5 px-6 max-w-xs">
                             <div style={{ fontWeight: 600, color: '#211D17', marginBottom: '6px' }} className="line-clamp-1">{issue.title}</div>
@@ -441,12 +472,11 @@ export default function AdminDashboard() {
                 </table>
               </div>
             </div>
-          </>
+          </motion.div>
         )}
 
-        {/* Analytics Tab */}
         {activeTab === 'analytics' && (
-          <div id="analytics-charts" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+          <motion.div key="analytics" id="analytics-charts" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
             {/* Category Chart */}
             <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #D6CFC0', padding: '32px', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#211D17', fontFamily: 'var(--font-display)', marginBottom: '24px' }}>Issues by Category</h3>
@@ -488,12 +518,11 @@ export default function AdminDashboard() {
                 <ExportButton reportType="full_report" label="Full Report" />
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* Tenders Tab */}
         {activeTab === 'tenders' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <motion.div key="tenders" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ backgroundColor: '#FFFFFF', borderRadius: '14px', border: '1px solid #D6CFC0', padding: '32px', boxShadow: '0 4px 16px rgba(33,29,23,0.06)' }}>
               <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#211D17', fontFamily: 'var(--font-display)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <FileText style={{ width: '22px', height: '22px', color: '#0F6E64' }} />
@@ -562,8 +591,9 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
 
       </main>
 
