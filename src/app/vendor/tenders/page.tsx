@@ -67,7 +67,13 @@ function VendorTendersContent() {
       const res = await fetch('/api/v1/tenders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newTender, cost: Number(newTender.cost), vendorId: vendor.id })
+        body: JSON.stringify({
+          issueId: newTender.issueId,
+          proposalText: newTender.proposal,
+          estimatedCostNpr: Number(newTender.cost),
+          estimatedDays: Number(newTender.timeline),
+          vendorId: vendor.id
+        })
       });
       const data = await res.json();
       if (data.success) {
