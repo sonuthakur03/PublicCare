@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { Megaphone, Plus, Eye, MousePointer2, AlertTriangle, Play, Pause, Trash2, Upload } from 'lucide-react';
 
 export default function VendorAdsPage() {
@@ -128,7 +129,7 @@ export default function VendorAdsPage() {
     }
   };
 
-  if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading ads...</div>;
+  if (loading) return <PageLoadingScreen isLoading={true} subtitle="Loading your ads…" />;
 
   return (
     <div style={{ backgroundColor: 'var(--surface)', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>

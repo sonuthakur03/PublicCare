@@ -1,6 +1,3 @@
-// CivicPulse - Lalitpur Municipality Prisma Schema
-// Compatible with standard Postgres VARCHAR columns
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,11 +16,10 @@ model User {
   organizationName   String?       @map("organization_name")
   registrationNumber String?       @map("registration_number")
   createdAt          DateTime      @default(now()) @map("created_at")
-  
-  issues             Issue[]
-  votes              IssueVote[]
-  ngoKeys            NgoApiKey[]
   chatMessages       ChatMessage[]
+  votes              IssueVote[]
+  issues             Issue[]
+  ngoKeys            NgoApiKey[]
   vendor             Vendor?
 
   @@map("users")
@@ -34,7 +30,7 @@ model Issue {
   userId          String?     @map("user_id")
   title           String
   category        String
-  description     String      @db.Text
+  description     String
   locationLat     Float       @map("location_lat")
   locationLng     Float       @map("location_lng")
   address         String
@@ -44,12 +40,11 @@ model Issue {
   createdAt       DateTime    @default(now()) @map("created_at")
   escalatedAt     DateTime?   @map("escalated_at")
   resolvedAt      DateTime?   @map("resolved_at")
-  resolutionNotes String?     @db.Text @map("resolution_notes")
+  resolutionNotes String?     @map("resolution_notes")
   reporterName    String?     @map("reporter_name")
   reporterContact String?     @map("reporter_contact")
-
-  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   votes           IssueVote[]
+  user            User?       @relation(fields: [userId], references: [id])
   tenders         Tender[]
 
   @@index([status])
@@ -64,7 +59,6 @@ model IssueVote {
   userId    String   @map("user_id")
   voteType  String   @default("UP") @map("vote_type")
   createdAt DateTime @default(now()) @map("created_at")
-
   issue     Issue    @relation(fields: [issueId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -82,7 +76,6 @@ model NgoApiKey {
   subscriptionCostNpr Float    @default(0.0) @map("subscription_cost_npr")
   requestCount        Int      @default(0) @map("request_count")
   createdAt           DateTime @default(now()) @map("created_at")
-
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("ngo_api_keys")
@@ -93,28 +86,27 @@ model ChatMessage {
   userId      String?  @map("user_id")
   senderName  String   @map("sender_name")
   isAnonymous Boolean  @default(true) @map("is_anonymous")
-  text        String   @db.Text
+  text        String
   roomKey     String   @map("room_key")
   ipSubnet    String   @map("ip_subnet")
   locationLat Float?   @map("location_lat")
   locationLng Float?   @map("location_lng")
   createdAt   DateTime @default(now()) @map("created_at")
-
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user        User?    @relation(fields: [userId], references: [id])
 
   @@index([roomKey])
   @@index([createdAt])
+  @@index([createdAt], map: "idx_chat_created")
+  @@index([roomKey], map: "idx_chat_room")
   @@map("chat_messages")
 }
-
-// ─── Vendor System ────────────────────────────────────────
 
 model Vendor {
   id            String   @id @default(cuid())
   userId        String   @unique @map("user_id")
   companyName   String   @map("company_name")
   businessType  String   @map("business_type")
-  description   String   @db.Text
+  description   String
   contactPhone  String?  @map("contact_phone")
   website       String?
   logoUrl       String?  @map("logo_url")
@@ -125,37 +117,40 @@ model Vendor {
   isApproved    Boolean  @default(false) @map("is_approved")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   ads           Ad[]
   tenders       Tender[]
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([businessType])
   @@index([isApproved])
+  @@index([isApproved], map: "idx_vendors_approved")
+  @@index([businessType], map: "idx_vendors_business_type")
   @@map("vendors")
 }
 
 model Ad {
-  id          String   @id @default(cuid())
-  vendorId    String   @map("vendor_id")
+  id          String    @id @default(cuid())
+  vendorId    String    @map("vendor_id")
   title       String
-  description String   @db.Text
-  imageUrl    String?  @map("image_url")
-  linkUrl     String?  @map("link_url")
-  placement   String   @default("FEED")
-  isActive    Boolean  @default(true) @map("is_active")
-  isApproved  Boolean  @default(false) @map("is_approved")
-  impressions Int      @default(0)
-  clicks      Int      @default(0)
-  startDate   DateTime @default(now()) @map("start_date")
+  description String
+  imageUrl    String?   @map("image_url")
+  linkUrl     String?   @map("link_url")
+  placement   String    @default("FEED")
+  isActive    Boolean   @default(true) @map("is_active")
+  isApproved  Boolean   @default(false) @map("is_approved")
+  impressions Int       @default(0)
+  clicks      Int       @default(0)
+  startDate   DateTime  @default(now()) @map("start_date")
   endDate     DateTime? @map("end_date")
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  vendor      Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  vendor      Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   @@index([placement])
   @@index([isActive])
   @@index([isApproved])
+  @@index([isActive], map: "idx_ads_active")
+  @@index([isApproved], map: "idx_ads_approved")
+  @@index([placement], map: "idx_ads_placement")
   @@map("ads")
 }
 
@@ -163,19 +158,21 @@ model Tender {
   id               String    @id @default(cuid())
   vendorId         String    @map("vendor_id")
   issueId          String    @map("issue_id")
-  proposalText     String    @db.Text @map("proposal_text")
+  proposalText     String    @map("proposal_text")
   estimatedCostNpr Float     @map("estimated_cost_npr")
   estimatedDays    Int       @map("estimated_days")
   status           String    @default("SUBMITTED")
   submittedAt      DateTime  @default(now()) @map("submitted_at")
   respondedAt      DateTime? @map("responded_at")
-  responseNotes    String?   @db.Text @map("response_notes")
-
-  vendor           Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  responseNotes    String?   @map("response_notes")
   issue            Issue     @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  vendor           Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@index([issueId])
   @@index([vendorId])
+  @@index([issueId], map: "idx_tenders_issue")
+  @@index([status], map: "idx_tenders_status")
+  @@index([vendorId], map: "idx_tenders_vendor")
   @@map("tenders")
 }

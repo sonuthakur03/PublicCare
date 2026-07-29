@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import NearbyVendorsPanel from '@/components/NearbyVendorsPanel';
 import ExportButton from '@/components/ExportButton';
-import LoadingScreen from '@/components/LoadingScreen';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { Issue, IssueStatus, StatsSummary, User, Tender } from '@/types';
 import { Building2, AlertTriangle, CheckCircle2, Clock, ShieldCheck, Filter, Send, MapPin, Lock, LogIn, Download, FileText, TrendingUp, BarChart3, Store, Bell } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return <LoadingScreen />;
+    return <PageLoadingScreen isLoading={true} subtitle="Verifying Sanitation Officer Access…" />;
   }
 
   if (!currentUser || (currentUser.role !== 'municipality_admin' && currentUser.role !== 'superadmin')) {
