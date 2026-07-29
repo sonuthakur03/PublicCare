@@ -8,6 +8,7 @@ import IssueCard from '@/components/IssueCard';
 import AdCard from '@/components/AdCard';
 import LocationAccessBadge from '@/components/LocationAccessBadge';
 import NearbyChatWidget from '@/components/NearbyChatWidget';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { Issue, IssueCategory, IssueStatus, StatsSummary, User } from '@/types';
 import { Search, Filter, AlertTriangle, ShieldCheck, Flame, Layers, Sparkles, RefreshCw, PlusCircle, MapPin, ThumbsUp, Building2, ChevronRight } from 'lucide-react';
 
@@ -119,11 +120,7 @@ export default function Home() {
   ];
 
   if (authLoading) {
-    return (
-      <div style={{ backgroundColor: '#FAF8F4', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <p style={{ color: '#59524A' }}>Loading...</p>
-      </div>
-    );
+    return <PageLoadingScreen isLoading={true} subtitle="Loading your civic dashboard…" />;
   }
 
   if (!user) {
@@ -204,7 +201,7 @@ export default function Home() {
         </main>
 
         <footer style={{ borderTop: '1px solid #D6CFC0', padding: '2rem', textAlign: 'center', color: '#59524A' }}>
-          <p>Built for Lalitpur Metropolitan City © 2026 PublicCare.</p>
+          <p>Built for  Metropolitan City © 2026 PublicCare.</p>
         </footer>
       </div>
     );

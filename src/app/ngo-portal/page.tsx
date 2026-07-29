@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { NgoApiKey, User } from '@/types';
 import { Key, Download, Copy, Check, Terminal, Sparkles, Lock, LogIn, UserPlus } from 'lucide-react';
 
@@ -133,14 +134,7 @@ export default function NgoPortal() {
   };
 
   if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center">
-          <p style={{ fontSize: '12px', color: '#59524A' }} className="animate-pulse">Verifying NGO Research Credentials...</p>
-        </main>
-      </div>
-    );
+    return <PageLoadingScreen isLoading={true} subtitle="Verifying NGO Research Credentials…" />;
   }
 
   if (!currentUser || (currentUser.role !== 'ngo' && currentUser.role !== 'municipality_admin')) {

@@ -3,6 +3,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { FileText, Plus, CheckCircle, Clock, XCircle, AlertTriangle, Flame, Tag, ArrowRight } from 'lucide-react';
 
 function VendorTendersContent() {
@@ -81,7 +82,7 @@ function VendorTendersContent() {
     }
   };
 
-  if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading tenders...</div>;
+  if (loading) return <PageLoadingScreen isLoading={true} subtitle="Loading your tenders…" />;
 
   return (
     <div style={{ backgroundColor: 'var(--surface)', minHeight: '100vh', fontFamily: 'Inter, sans-serif' }}>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import NearbyVendorsPanel from '@/components/NearbyVendorsPanel';
 import ExportButton from '@/components/ExportButton';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { Issue, IssueStatus, StatsSummary, User, Tender } from '@/types';
 import { Building2, AlertTriangle, CheckCircle2, Clock, ShieldCheck, Filter, Send, MapPin, Lock, LogIn, Download, FileText, TrendingUp, BarChart3, Store } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
@@ -127,14 +128,7 @@ export default function AdminDashboard() {
   };
 
   if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#FAF8F4', color: '#211D17', fontFamily: 'var(--font-body)' }}>
-        <Navbar />
-        <main className="flex-1 flex items-center justify-center">
-          <p style={{ fontSize: '12px', color: '#59524A' }} className="animate-pulse">Verifying Sanitation Officer Access...</p>
-        </main>
-      </div>
-    );
+    return <PageLoadingScreen isLoading={true} subtitle="Verifying Sanitation Officer Access…" />;
   }
 
   if (!currentUser || (currentUser.role !== 'municipality_admin' && currentUser.role !== 'superadmin')) {

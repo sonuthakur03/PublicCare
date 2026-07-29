@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import PageLoadingScreen from '@/components/PageLoadingScreen';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, 
   PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer, Legend 
@@ -221,7 +222,7 @@ export default function SuperadminDashboard() {
   };
 
   if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'var(--surface)' }}>Loading...</div>;
+    return <PageLoadingScreen isLoading={true} subtitle="Loading Superadmin Dashboard…" />;
   }
 
   if (!currentUser) return null;
