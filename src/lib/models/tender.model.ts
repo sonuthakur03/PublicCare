@@ -71,8 +71,8 @@ export const TenderModel = {
   async create(vendorId: string, issueId: string, data: { proposalText: string; estimatedCostNpr: number; estimatedDays: number }): Promise<Tender> {
     const created = await prisma.tender.create({
       data: {
-        vendorId,
-        issueId,
+        vendor: { connect: { id: vendorId } },
+        issue: { connect: { id: issueId } },
         proposalText: data.proposalText,
         estimatedCostNpr: data.estimatedCostNpr,
         estimatedDays: data.estimatedDays,
