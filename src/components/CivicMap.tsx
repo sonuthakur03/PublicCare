@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Issue, IssueStatus } from '@/types';
+import 'leaflet/dist/leaflet.css';
 
 interface CivicMapProps {
   issues: Issue[];
@@ -25,14 +26,6 @@ export default function CivicMap({ issues, onUpvote, selectedIssueId, onSelectIs
     if (typeof window === 'undefined' || !mapContainerRef.current) return;
 
     import('leaflet').then((L) => {
-      if (!document.getElementById('leaflet-css-cdn')) {
-        const link = document.createElement('link');
-        link.id = 'leaflet-css-cdn';
-        link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        document.head.appendChild(link);
-      }
-
       const container = mapContainerRef.current;
       if (!container) return;
 

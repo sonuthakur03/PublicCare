@@ -1,6 +1,6 @@
 import { User } from '@/types';
+import jwt from 'jsonwebtoken';
 
-// Simple, robust Web Crypto / HMAC JWT Helper adhering to DRY principles
 const JWT_SECRET = 'PublicCare_lalitpur_secure_jwt_secret_key_2026';
 const REFRESH_SECRET = 'PublicCare_lalitpur_secure_refresh_secret_key_2026';
 
@@ -9,39 +9,32 @@ export interface JwtPayload {
   email: string;
   role: string;
   name: string;
-  exp: number;
+  exp?: number;
 }
 
 export function generateAccessToken(user: User): string {
-  const payload: JwtPayload = {
+  const payload = {
     userId: user.id,
     email: user.email,
     role: user.role,
     name: user.name,
-    exp: Math.floor(Date.now() / 1000) + 15 * 60 // 15 minutes
   };
-  return btoa(JSON.stringify(payload));
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '15m' });
 }
 
 export function generateRefreshToken(user: User): string {
-  const payload: JwtPayload = {
+  const payload = {
     userId: user.id,
     email: user.email,
     role: user.role,
     name: user.name,
-    exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60 // 7 days
   };
-  return btoa(JSON.stringify(payload));
+  return jwt.sign(payload, REFRESH_SECRET, { expiresIn: '7d' });
 }
 
 export function verifyToken(token: string): JwtPayload | null {
   try {
-    const jsonStr = atob(token);
-    const payload: JwtPayload = JSON.parse(jsonStr);
-    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
-      return null; // Expired
-    }
-    return payload;
+    return jwt.verify(token, JWT_SECRET) as JwtPayload;
   } catch (err) {
     return null;
   }
